@@ -1,0 +1,134 @@
+{
+  "layout_ascii": [
+    "             N              ",
+    "  ########N1######==N2===## ",
+    "  #W1                     # ",
+    "  #                       #E3",
+    "  |W2                     # ",
+    "  #                       # ",
+    "W #                       # E",
+    "  #                       # ",
+    "  #W3                     # ",
+    "  #                  ###E2# ",
+    "  #                  #E1    ",
+    "  #                  #      ",
+    "  #####S1#####|S2#S3##      ",
+    "              S             "
+  ],
+  "room_dimensions": {
+    "total_north_wall_inches": 173.0,
+    "total_south_wall_inches": 77.25,
+    "total_west_wall_inches": 132.25,
+    "total_east_wall_inches": 179.0,
+    "notes": "Irregular room shape with varying wall lengths"
+  },
+  "furniture_dimensions": {
+    "table": {
+      "width_feet": 3.0,
+      "height_feet": 2.0,
+      "width_inches": 36,
+      "height_inches": 24
+    },
+    "chair": {
+      "width_feet": 1.5,
+      "height_feet": 1.5,
+      "width_inches": 18,
+      "height_inches": 18
+    },
+    "fridge": {
+      "width_feet": 3.0,
+      "height_feet": 2.5,
+      "width_inches": 36,
+      "height_inches": 30
+    },
+    "stove": {
+      "width_feet": 2.5,
+      "height_feet": 2.0,
+      "width_inches": 30,
+      "height_inches": 24
+    },
+    "sink": {
+      "width_feet": 2.0,
+      "height_feet": 1.5,
+      "width_inches": 24,
+      "height_inches": 18
+    },
+    "counter": {
+      "width_feet": 2.0,
+      "height_feet": 1.0,
+      "width_inches": 24,
+      "height_inches": 12
+    }
+  },
+  "clearance_requirements": {
+    "walking_space": {
+      "width_feet": 3.0,
+      "width_inches": 36
+    },
+    "chair_pullout": {
+      "depth_feet": 2.0,
+      "depth_inches": 24
+    },
+    "appliance_clearance": {
+      "width_feet": 3.0,
+      "width_inches": 36
+    }
+  },
+  "wall_measurements": {
+    "N1": {
+      "type": "wall",
+      "measurement_inches": 87,
+      "symbol": "#"
+    },
+    "N2": {
+      "type": "window", 
+      "measurement_inches": 86,
+      "symbol": "="
+    },
+    "W1": {
+      "type": "wall",
+      "measurement_inches": 28,
+      "symbol": "#"
+    },
+    "W2": {
+      "type": "door",
+      "measurement_inches": 31.5,
+      "symbol": "|"
+    },
+    "W3": {
+      "type": "wall",
+      "measurement_inches": 72.75,
+      "symbol": "#"
+    },
+    "S1": {
+      "type": "wall",
+      "measurement_inches": 40.75,
+      "symbol": "#"
+    },
+    "S2": {
+      "type": "door",
+      "measurement_inches": 32,
+      "symbol": "|"
+    },
+    "S3": {
+      "type": "wall",
+      "measurement_inches": 4.5,
+      "symbol": "#"
+    },
+    "E1": {
+      "type": "wall",
+      "measurement_inches": 32.75,
+      "symbol": "#"
+    },
+    "E2": {
+      "type": "wall",
+      "measurement_inches": 46.75,
+      "symbol": "#"
+    },
+    "E3": {
+      "type": "wall",
+      "measurement_inches": 99.5,
+      "symbol": "#"
+    }
+  }
+}
