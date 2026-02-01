@@ -38,8 +38,11 @@ Kitchen layout and design assistant specialized in creating proportionally accur
 
 ```
 get-in-the/
-├── .github/agents/getinthe.md          ← This file
-├── .github/prompts/@getinthe.md        ← Agent prompt
+├── .github/
+│   ├── agents/getinthe.md              ← This file
+│   ├── prompts/@getinthe.md            ← Agent prompt
+│   └── copilot-instructions.md         ← Copilot instructions
+├── .venv/                              ← Virtual environment (gitignored)
 ├── docs/robots/                        ← Documentation
 ├── scripts/
 │   ├── config/
@@ -49,32 +52,57 @@ get-in-the/
 │   │   ├── kitchen_scale_converter.py  ← Conversions
 │   │   └── validate_layout.py          ← Validation
 │   └── kitchen_layout_generator.py     ← Main generator
-└── output/kitchen_layout.txt           ← Generated output
+├── output/kitchen_layout.txt           ← Generated output
+└── pyproject.toml                      ← Poetry configuration
+```
+
+## Setup
+
+### Docker (Recommended)
+```bash
+docker/run.sh build
+docker/run.sh svg
+```
+
+### Local Setup
+```bash
+# With Poetry
+poetry install
+poetry shell
+
+# Or with venv
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
 ## Usage
 
-### Generate Layout
+### Docker Commands
 ```bash
-python3 scripts/kitchen_layout_generator.py > output/kitchen_layout.txt
+docker/run.sh kitchen          # Generate both SVG + ASCII (recommended)
+docker/run.sh svg              # Generate SVG only
+docker/run.sh ascii            # Generate ASCII only
+docker/run.sh validate         # Validate configuration
+docker/run.sh shell            # Interactive shell
 ```
 
-### Zoom Levels
+### Local Commands
 ```bash
-python3 scripts/kitchen_layout_generator.py --zoom 0.5   # Zoom out
-python3 scripts/kitchen_layout_generator.py --zoom 1.5   # Zoom in
-python3 scripts/kitchen_layout_generator.py --zoom 2.0   # Maximum zoom
+# Generate both layouts (recommended)
+poetry run python scripts/kitchen.py
+
+# Individual formats
+poetry run python scripts/engine/svg_renderer.py              # SVG only
+poetry run python scripts/kitchen_layout_generator.py         # ASCII only
+poetry run python scripts/kitchen_layout_generator.py --zoom 0.5   # ASCII with zoom
+
+# Validate
+poetry run python scripts/engine/validate_layout.py
 ```
 
-### Custom Canvas
-```bash
-python3 scripts/kitchen_layout_generator.py --width 120 --height 50
-```
-
-### Validate Configuration
-```bash
-python3 scripts/engine/validate_layout.py
-```
+### Output Files
+- 📊 `output/kitchen_layout.svg` - Accurate SVG visualization (open in browser)
+- 📄 `output/kitchen_layout.txt` - ASCII fallback (easy for adjustments)
 
 ## Key Learnings
 
@@ -93,11 +121,13 @@ python3 scripts/engine/validate_layout.py
 - ✅ L-shape created by shorter south wall + alcove
 
 ### Best Practices
-1. **Always save script output to files** - User needs to view results
-2. **Single output file** - Keep `output/kitchen_layout.txt` updated
-3. **Verify measurements mathematically** before implementing
-4. **Test proportions visually** - aspect ratio must look correct
-5. **Use `.md` for agent config** - Better readability than JSON
+1. **Use Docker for consistency** - `docker/run.sh` commands work everywhere
+2. **Prefer SVG over ASCII** - Accurate dimensions without character aspect ratio issues
+3. **Use Poetry for dependencies** - Never pip directly, use `poetry add`
+4. **Always save script output to files** - User needs to view results
+5. **Verify measurements mathematically** before implementing
+6. **Test proportions visually** - aspect ratio must look correct
+7. **Use `.md` for agent config** - Better readability than JSON
 
 ## Symbol Legend
 

@@ -1,111 +1,71 @@
 # get-in-the
 
-Kitchen layout and design project with ASCII visualization and measurement tracking.
+Kitchen layout designer with visual floor plans.
 
-## Kitchen Layout
-
-```
-             N              
-  ########N1######==N2===## 
-  #W1                     # 
-  #                       #E3 
-  |W2                     # 
-  #                       # 
-W #                       # E
-  #                       # 
-  #W3                     # 
-  #                  ###E2# 
-  #                  #E1    
-  #                  #      
-  #####S1#####|S2#S3##      
-              S             
-```
-
-## Wall Measurements
-
-- **#N1** = 87" (wall)
-- **=N2** = 86" (window)
-- **#W1** = 28" (wall)
-- **|W2** = 31.5" (door)
-- **#W3** = 72.75" (wall)
-- **#S1** = 40.75" (wall)
-- **|S2** = 32" (door)
-- **#S3** = 4.5" (wall)
-- **#E1** = 32.75" (wall)
-- **#E2** = 46.75" (wall)
-- **#E3** = 99.5" (wall)
-
-## Legend
-
-- **T**: Table
-- **c**: Chair
-- **F**: Fridge
-- **s**: Stove
-- **k**: Sink
-- **-**: Counter
-- **|**: Door
-- **=**: Window
-- **#**: Wall
-
-## Project Structure
-
-```
-get-in-the/
-├── .github/
-│   ├── agents/
-│   │   └── getinthe.json          # Agent configuration
-│   └── prompts/
-│       └── @getinthe.md           # Agent prompt/instructions
-├── docs/
-│   └── robots/                    # Documentation and memory
-├── scripts/
-│   ├── config/
-│   │   ├── kitchen_measurements.json   # Room measurements
-│   │   └── kitchen_analysis.json       # Layout analysis
-│   ├── engine/
-│   │   ├── layout_scaling_engine.py    # Scaling calculations
-│   │   └── kitchen_scale_converter.py  # Measurement conversions
-│   ├── kitchen_layout_generator.py     # Main layout generator
-│   └── room_layout_generator.py        # Generic room layouts
-└── README.md
-```
-
-## Usage
-
-### Generate Kitchen Layout
+## Quick Start
 
 ```bash
-python3 scripts/kitchen_layout_generator.py
+# First time setup
+docker/run.sh build
+
+# Generate your kitchen layout
+docker/run.sh kitchen
+
+# Save a milestone
+docker/run.sh milestone "Added E2 door"
 ```
 
-This will display the kitchen layout with measurements and analysis.
+This creates two files:
+- 📊 `output/kitchen_layout.svg` - Open in your browser to see the floor plan
+- 📄 `output/kitchen_layout.txt` - Quick text view for making adjustments
 
-### Test Scaling Engine
+## Commands
+
+All user-facing commands are in `.github/commands/`:
+- `kitchen.py` - Generate both SVG and ASCII layouts
+- `milestone.py` - Generate layouts and commit to git
+
+Usage:
+```bash
+# Docker
+docker/run.sh kitchen
+docker/run.sh milestone "Added E2 door"
+
+# Local
+poetry run python .github/commands/kitchen.py
+poetry run python .github/commands/milestone.py -m "Added E2 door"
+```
+
+## Using @getinthe
+
+Ask `@getinthe` in Copilot Chat to:
+- Generate updated layouts
+- Adjust measurements
+- Validate your kitchen design
+- Make changes to the floor plan
+- Create milestones
+
+Example: "@getinthe update the north wall window to 90 inches"
+
+After changes: `docker/run.sh milestone "Updated north window"`
+
+## Other Commands
 
 ```bash
-python3 scripts/engine/layout_scaling_engine.py
+docker/run.sh validate  # Check if measurements are correct
+docker/run.sh shell     # Open interactive mode
+docker/run.sh clean     # Remove containers
 ```
 
-This will show scaling calculations and wall segment information.
+## Documentation
 
-## Features
+For technical details and how things work, see the [docs](docs/) folder.
 
-- **Accurate Measurements**: All wall segments precisely measured in inches
-- **ASCII Visualization**: Clear text-based layout representation
-- **Scaling Engine**: Converts real measurements to character positions
-- **Furniture Placement**: Support for tables, chairs, appliances, and counters
-- **Work Triangle Analysis**: Validates kitchen ergonomics
-- **Clearance Calculations**: Ensures proper walking and working spaces
+---
 
-## Agent: @getinthe
-
-The `@getinthe` agent is a kitchen design assistant that helps with:
-
-1. Generating accurate scaled kitchen layouts
-2. Analyzing furniture placement and work triangles
-3. Calculating clearances and walking spaces
-4. Validating kitchen ergonomics
-5. Maintaining configuration files with room measurements
-
-Use `@getinthe` in GitHub Copilot to get help with kitchen design tasks.
+**Kitchen Layout:**
+- North wall: 173" (window: 86")
+- West wall: 132.25" (door: 31.5")  
+- South wall: 127.25" (door: 32")
+- East wall: 179" (L-shaped alcove)
 

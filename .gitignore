@@ -1,2 +1,25 @@
-*.pyc
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python
 __pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Poetry
+poetry.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Output
+output/*.txt
+!output/.gitkeep

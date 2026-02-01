@@ -123,7 +123,24 @@
     "E2": {
       "type": "wall",
       "measurement_inches": 46.75,
-      "symbol": "#"
+      "symbol": "#",
+      "segments": [
+        {
+          "type": "wall",
+          "measurement_inches": 8.25,
+          "symbol": "#"
+        },
+        {
+          "type": "door",
+          "measurement_inches": 18.25,
+          "symbol": "|"
+        },
+        {
+          "type": "wall",
+          "measurement_inches": 20.25,
+          "symbol": "#"
+        }
+      ]
     },
     "E3": {
       "type": "wall",

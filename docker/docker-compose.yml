@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  kitchen-layout:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: get-in-the
+    volumes:
+      # Mount output directory to persist generated files
+      - ../output:/app/output
+      # Mount scripts for live development
+      - ../scripts:/app/scripts
+      # Mount commands
+      - ../.github/commands:/app/.github/commands
+      # Mount config for easy updates
+      - ../scripts/config:/app/scripts/config
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: python .github/commands/kitchen.py
+    
+  # Service for ASCII layout generation
+  ascii-layout:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: get-in-the-ascii
+    volumes:
+      - ../output:/app/output
+      - ../scripts:/app/scripts
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: sh -c "python scripts/kitchen_layout_generator.py > output/kitchen_layout.txt"
+    profiles:
+      - ascii
+  
+  # Service for validation
+  validate:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: get-in-the-validate
+    volumes:
+      - ../scripts:/app/scripts
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: python scripts/engine/validate_layout.py
+    profiles:
+      - validate
+  
+  # Interactive shell for development
+  shell:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: get-in-the-shell
+    volumes:
+      - ../output:/app/output
+      - ../scripts:/app/scripts
+      - ../docs:/app/docs
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+    profiles:
+      - shell

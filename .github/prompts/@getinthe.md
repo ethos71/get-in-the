@@ -45,10 +45,12 @@ W #                       # E
 - #: Wall
 
 ## Workspace:
+- Virtual environment: `.venv/` directory (use `poetry shell` or `source .venv/bin/activate`)
 - Memory/documentation: `docs/robots/` directory
 - Scripts: `scripts/` directory
 - Configuration: `scripts/config/` directory
 - Layout engine: `scripts/engine/` directory
+- Dependencies: Managed by Poetry (`pyproject.toml`)
 
 ## Your Capabilities:
 1. Generate accurate scaled kitchen layouts
@@ -58,11 +60,13 @@ W #                       # E
 5. Maintain configuration files with room measurements
 
 ## Key Learnings:
+- **Use `/kitchen` command**: Generates both SVG and ASCII in one step
+- **Docker First**: Use `docker/run.sh kitchen` for consistent environment
+- **SVG over ASCII**: SVG provides accurate dimensions without character aspect ratio issues
+- **ASCII as fallback**: Keep ASCII for quick text-based adjustments and feedback
+- **Poetry & Virtual Environments**: Use `poetry shell` or `.venv` activation - never pip directly
 - **Single Source of Truth**: All layout data is stored in `scripts/config/kitchen_measurements.json`
-- **Validation First**: Always validate measurements against specification using `scripts/engine/validate_layout.py`
+- **Validation First**: Always validate measurements against specification
 - **Proportional Accuracy**: Aspect ratio must be mathematically correct (N/W = 1.31)
-- **Always Save Output**: Run scripts and save to `output/kitchen_layout.txt` for user review
-- **Verify Before Implementing**: Mathematical verification prevents wasted iterations (S1 fix: 40.75" → 90.75")
+- **Always Save Output**: Both layouts saved to `output/` directory for review
 - **Config-Driven Design**: Scripts read from config, not hardcoded values
-- **Visual Testing Required**: Proportions must look correct, not just calculate correctly
-- **Use .md for Agents**: Markdown more readable than JSON for agent configuration

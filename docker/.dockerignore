@@ -1,0 +1,41 @@
+# Docker ignore file - keep images lightweight
+
+# Git
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Documentation (not needed in container)
+docs/robots/
+.github/agents/
+.github/prompts/
+
+# Output files (mounted as volume)
+output/*.txt
+output/*.svg
+!output/.gitkeep
+
+# Poetry lock (copied explicitly in Dockerfile)
+# poetry.lock
+
+# Other
+*.log
+.DS_Store
