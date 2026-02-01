@@ -81,9 +81,35 @@
       "symbol": "#"
     },
     "N2": {
-      "type": "window", 
+      "type": "alcove",
       "measurement_inches": 86,
-      "symbol": "="
+      "symbol": "#",
+      "segments": [
+        {
+          "type": "wall",
+          "measurement_inches": 4,
+          "direction": "N",
+          "symbol": "#"
+        },
+        {
+          "type": "wall",
+          "measurement_inches": 29.5,
+          "direction": "NE",
+          "symbol": "#"
+        },
+        {
+          "type": "wall",
+          "measurement_inches": 41.25,
+          "direction": "E",
+          "symbol": "#"
+        },
+        {
+          "type": "wall",
+          "measurement_inches": 31,
+          "direction": "SE",
+          "symbol": "#"
+        }
+      ]
     },
     "W1": {
       "type": "wall",

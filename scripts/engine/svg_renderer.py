@@ -72,7 +72,7 @@ class SVGRenderer:
         # Create main group with margin offset
         main_group = dwg.g(transform=f"translate({margin},{margin})")
         
-        # Add floor background for the L-shaped room
+        # Add floor background for the L-shaped room with north alcove
         floor_group = dwg.g()
         
         # Calculate L-shape dimensions
@@ -85,25 +85,55 @@ class SVGRenderer:
         main_rect_width = self.inches_to_pixels(north_width)
         main_rect_height = self.inches_to_pixels(west_height)
         
-        # Draw L-shape as a path (clockwise from top-left)
+        # South alcove dimensions
         south_wall_px = self.inches_to_pixels(south_wall_length)
         alcove_depth_px = self.inches_to_pixels(alcove_depth)
         e2_width_px = self.inches_to_pixels(wall_measurements["E2"]["measurement_inches"])
         e3_height_px = self.inches_to_pixels(wall_measurements["E3"]["measurement_inches"])
         
-        # L-shaped floor path
-        l_shape_path = [
-            f"M 0 0",  # Start at top-left
-            f"L {main_rect_width} 0",  # North wall (right)
-            f"L {main_rect_width} {e3_height_px}",  # E3 down
-            f"L {south_wall_px} {e3_height_px}",  # E2 left (alcove top)
-            f"L {south_wall_px} {main_rect_height}",  # E1 down (alcove right)
-            f"L 0 {main_rect_height}",  # South wall left
-            f"Z"  # Close path back to start (West wall up)
-        ]
+        # North alcove dimensions (if N2 has segments)
+        n1_width_px = self.inches_to_pixels(wall_measurements["N1"]["measurement_inches"])
+        
+        # Build path for floor plan with both alcoves
+        path_points = []
+        
+        # Start at top-left, trace clockwise
+        path_points.append(f"M 0 0")  # Top-left corner
+        path_points.append(f"L {n1_width_px} 0")  # N1 wall
+        
+        # N2 alcove (if it has segments)
+        if "segments" in wall_measurements["N2"]:
+            import math
+            x = n1_width_px
+            y = 0
+            for seg in wall_measurements["N2"]["segments"]:
+                seg_length = self.inches_to_pixels(seg["measurement_inches"])
+                direction = seg.get("direction", "E")
+                
+                if direction == "N":
+                    y -= seg_length
+                elif direction == "NE":
+                    x += seg_length * math.cos(math.radians(45))
+                    y -= seg_length * math.sin(math.radians(45))
+                elif direction == "E":
+                    x += seg_length
+                elif direction == "SE":
+                    x += seg_length * math.cos(math.radians(-45))
+                    y += seg_length * math.sin(math.radians(-45))
+                
+                path_points.append(f"L {x} {y}")
+        else:
+            path_points.append(f"L {main_rect_width} 0")  # Straight north wall
+        
+        # Continue with rest of room
+        path_points.append(f"L {main_rect_width} {e3_height_px}")  # E3 down
+        path_points.append(f"L {south_wall_px} {e3_height_px}")  # E2 left (south alcove top)
+        path_points.append(f"L {south_wall_px} {main_rect_height}")  # E1 down (south alcove right)
+        path_points.append(f"L 0 {main_rect_height}")  # South wall left
+        path_points.append(f"Z")  # Close path (West wall up)
         
         floor_group.add(dwg.path(
-            d=" ".join(l_shape_path),
+            d=" ".join(path_points),
             fill=self.floor_color,
             stroke='none'
         ))
@@ -129,18 +159,69 @@ class SVGRenderer:
                            f'N1: {wall_measurements["N1"]["measurement_inches"]}"')
         x_pos += n1_width
         
-        # N2 - window
-        n2_width = self.inches_to_pixels(wall_measurements["N2"]["measurement_inches"])
-        walls_group.add(dwg.line(
-            start=(x_pos, y_pos),
-            end=(x_pos + n2_width, y_pos),
-            stroke=self.window_color,
-            stroke_width=self.window_width,
-            stroke_dasharray="10,5"
-        ))
-        self._add_dimension(dwg, walls_group, x_pos, y_pos - 20, x_pos + n2_width, y_pos - 20, 
-                           f'N2: {wall_measurements["N2"]["measurement_inches"]}" (window)')
-        x_pos += n2_width
+        # N2 - alcove (not a window)
+        n2_total = wall_measurements["N2"]["measurement_inches"]
+        
+        if "segments" in wall_measurements["N2"]:
+            # Draw alcove segments with angles
+            import math
+            
+            segments = wall_measurements["N2"]["segments"]
+            start_x = x_pos
+            start_y = y_pos
+            
+            for seg in segments:
+                seg_length = self.inches_to_pixels(seg["measurement_inches"])
+                direction = seg.get("direction", "E")
+                
+                # Calculate end point based on direction
+                if direction == "N":
+                    end_x = start_x
+                    end_y = start_y - seg_length
+                elif direction == "NE":
+                    # 45 degree angle northeast
+                    end_x = start_x + seg_length * math.cos(math.radians(45))
+                    end_y = start_y - seg_length * math.sin(math.radians(45))
+                elif direction == "E":
+                    end_x = start_x + seg_length
+                    end_y = start_y
+                elif direction == "SE":
+                    # 45 degree angle southeast
+                    end_x = start_x + seg_length * math.cos(math.radians(-45))
+                    end_y = start_y + seg_length * math.sin(math.radians(-45))
+                else:
+                    end_x = start_x + seg_length
+                    end_y = start_y
+                
+                # Draw wall segment
+                walls_group.add(dwg.line(
+                    start=(start_x, start_y),
+                    end=(end_x, end_y),
+                    stroke=self.wall_color,
+                    stroke_width=self.wall_width
+                ))
+                
+                start_x = end_x
+                start_y = end_y
+            
+            # Update x_pos to end of alcove (should be 86" from start)
+            x_pos += self.inches_to_pixels(n2_total)
+            
+            # Dimension label for N2
+            self._add_dimension(dwg, walls_group, x_pos - self.inches_to_pixels(n2_total), y_pos - 30, 
+                               x_pos, y_pos - 30, f'N2: {n2_total}" (alcove)')
+        else:
+            # Fallback: draw as simple wall
+            n2_width = self.inches_to_pixels(n2_total)
+            walls_group.add(dwg.line(
+                start=(x_pos, y_pos),
+                end=(x_pos + n2_width, y_pos),
+                stroke=self.wall_color,
+                stroke_width=self.wall_width
+            ))
+            self._add_dimension(dwg, walls_group, x_pos, y_pos - 20, x_pos + n2_width, y_pos - 20, 
+                               f'N2: {n2_total}"')
+            x_pos += n2_width
         
         # West wall (going down from top-left)
         x_pos = 0

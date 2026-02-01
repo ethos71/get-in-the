@@ -40,7 +40,7 @@ Wall Measurements:
 
 North:
   #N1 = 87" (wall)
-  =N2 = 86" (window)
+  #N2 = 86" (alcove)
 
 West:
   #W1 = 28" (wall)

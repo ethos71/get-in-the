@@ -64,8 +64,9 @@ For technical details and how things work, see the [docs](docs/) folder.
 ---
 
 **Kitchen Layout:**
-- North wall: 173" (window: 86")
+- North wall: 173" (N1: 87" wall + N2: 86" alcove)
 - West wall: 132.25" (door: 31.5")  
 - South wall: 127.25" (door: 32")
-- East wall: 179" (L-shaped alcove)
+- East wall: 179" (E2 has door: 18.25")
+- L-shaped with alcoves on north and south-east
 
