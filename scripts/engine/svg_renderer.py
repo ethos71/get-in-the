@@ -52,16 +52,31 @@ class SVGRenderer:
         """
         wall_measurements = self.measurements.get("wall_measurements", {})
         
-        # Calculate room dimensions
+        # Calculate north wall width
         north_width = wall_measurements["N1"]["measurement_inches"] + wall_measurements["N2"]["measurement_inches"]
         west_height = (wall_measurements["W1"]["measurement_inches"] + 
                       wall_measurements["W2"]["measurement_inches"] + 
                       wall_measurements["W3"]["measurement_inches"])
         
+        # Calculate additional space needed for north alcove
+        north_alcove_depth = 0
+        if "segments" in wall_measurements["N2"]:
+            import math
+            # Calculate how far north the alcove extends
+            for seg in wall_measurements["N2"]["segments"]:
+                direction = seg.get("direction", "E")
+                seg_inches = seg["measurement_inches"]
+                if direction == "N":
+                    north_alcove_depth += seg_inches
+                elif direction == "NE":
+                    # NE contributes to northern extension
+                    north_alcove_depth += seg_inches * math.sin(math.radians(45))
+        
         # Convert to pixels and add margins
         margin = 50  # pixels
         svg_width = self.inches_to_pixels(north_width) + (margin * 2)
-        svg_height = self.inches_to_pixels(west_height) + (margin * 2)
+        # Add extra space for north alcove
+        svg_height = self.inches_to_pixels(west_height) + self.inches_to_pixels(north_alcove_depth) + (margin * 2) + 40
         
         # Create SVG drawing
         dwg = svgwrite.Drawing(output_path, size=(f"{svg_width}px", f"{svg_height}px"))
@@ -69,8 +84,9 @@ class SVGRenderer:
         # Add background
         dwg.add(dwg.rect(insert=(0, 0), size=(svg_width, svg_height), fill='white'))
         
-        # Create main group with margin offset
-        main_group = dwg.g(transform=f"translate({margin},{margin})")
+        # Create main group with margin offset - shift down to accommodate north alcove
+        y_offset = margin + self.inches_to_pixels(north_alcove_depth)
+        main_group = dwg.g(transform=f"translate({margin},{y_offset})")
         
         # Add floor background for the L-shaped room with north alcove
         floor_group = dwg.g()
