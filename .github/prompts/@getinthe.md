@@ -60,7 +60,9 @@ W #                       # E
 ## Key Learnings:
 - **Single Source of Truth**: All layout data is stored in `scripts/config/kitchen_measurements.json`
 - **Validation First**: Always validate measurements against specification using `scripts/engine/validate_layout.py`
-- **ASCII Visualization**: The layout is a 14-line × 29-character irregular L-shaped kitchen
-- **Real Measurements**: Total perimeter is 561.5" (46.79') with 2 doors, 1 window
-- **Consolidation Matters**: Removed early POC files (room_layout_generator.py) - focus is kitchen-specific
+- **Proportional Accuracy**: Aspect ratio must be mathematically correct (N/W = 1.31)
+- **Always Save Output**: Run scripts and save to `output/kitchen_layout.txt` for user review
+- **Verify Before Implementing**: Mathematical verification prevents wasted iterations (S1 fix: 40.75" → 90.75")
 - **Config-Driven Design**: Scripts read from config, not hardcoded values
+- **Visual Testing Required**: Proportions must look correct, not just calculate correctly
+- **Use .md for Agents**: Markdown more readable than JSON for agent configuration

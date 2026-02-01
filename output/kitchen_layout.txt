@@ -1,0 +1,87 @@
+Kitchen Layout Generator - Proportionally Accurate
+============================================================
+
+Proportionally Accurate Kitchen Layout:
+                   N
+  ####################==================#
+  #                                     #
+  #                                     #
+  #                                     #
+  #                                     #
+  #                                     #
+  |                                     #
+  |                                     #
+  |                                     #
+  |                                     #
+  |                                     #
+  |                                     #
+  |                                     #
+  #                                     #
+W #                                     # E
+  #                                     #
+  #                                     #
+  #                                     #
+  #                                     #
+  #                                     #
+  #                                     #
+  #                                     #
+  #                           ###########
+  #                           #          
+  #                           #          
+  #                           #          
+  #                           #          
+  #                           #          
+  ####################|||||||##          
+                   S
+
+============================================================
+Scale Information:
+============================================================
+
+Layout Engine Scaling Information:
+  Base Scale: 1.00 chars/inch
+  Current Scale: 0.23
+  Zoom Level: 1.00x
+  Effective Scale: 0.23 chars/inch
+  Layout Dimensions: 39 x 29 chars
+  Max Boundaries: 120 x 40 chars
+
+============================================================
+Wall Totals:
+============================================================
+  North: 173" → 39 chars
+  West:  132.25" → 29 chars
+  South: 127.25" → 28 chars (SHORT - creates L)
+  East:  179.0"
+
+Proportions:
+  Aspect ratio (N/W): 39/29 = 1.34
+  Expected ratio: 1.31
+  Match: ✅ CORRECT
+
+============================================================
+Wall Measurements:
+============================================================
+  North:
+    #N1 = 87" (wall)
+    =N2 = 86" (window)
+  West:
+    #W1 = 28" (wall)
+    |W2 = 31.5" (door)
+    #W3 = 72.75" (wall)
+  South:
+    #S1 = 90.75" (wall)
+    |S2 = 32" (door)
+    #S3 = 4.5" (wall)
+  East:
+    #E1 = 32.75" (wall)
+    #E2 = 46.75" (wall)
+    #E3 = 99.5" (wall)
+
+============================================================
+Usage:
+============================================================
+  python3 scripts/kitchen_layout_generator.py
+  python3 scripts/kitchen_layout_generator.py --zoom 0.5
+  python3 scripts/kitchen_layout_generator.py --zoom 1.5
+  python3 scripts/kitchen_layout_generator.py --width 120 --height 50

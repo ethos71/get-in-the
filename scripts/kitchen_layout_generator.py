@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Kitchen Layout Generator - Creates ASCII kitchen layouts matching the exact specification
+Kitchen Layout Generator - Creates proportionally accurate ASCII layouts
 """
 
 import json
@@ -8,29 +8,25 @@ import sys
 import os
 from typing import List, Tuple, Dict
 
+# Add the engine directory to the path
+sys.path.append(os.path.join(os.path.dirname(__file__), 'engine'))
+from layout_scaling_engine import LayoutEngine
+
 class KitchenLayoutGenerator:
-    def __init__(self, config_path: str = "scripts/config/kitchen_measurements.json"):
+    def __init__(self, config_path: str = "scripts/config/kitchen_measurements.json", zoom: float = 1.0):
         self.config_path = config_path
         self.config = self.load_config()
+        self.zoom = zoom
+        self.engine = LayoutEngine(config_path)
         
-        # Get the layout from config
-        self.layout_template = self.config.get("layout_ascii", [])
-        
-        self.furniture_symbols = {
-            'table': 'T',
-            'chair': 'c',
-            'fridge': 'F',
-            'stove': 's',
-            'sink': 'k',
-            'counter': '-',
+        self.symbols = {
+            'wall': '#',
             'door': '|',
             'window': '=',
-            'wall': '#',
             'floor': ' '
         }
     
     def load_config(self) -> Dict:
-        """Load configuration from JSON file"""
         try:
             with open(self.config_path, 'r') as f:
                 return json.load(f)
@@ -38,109 +34,229 @@ class KitchenLayoutGenerator:
             print(f"Error: Config file {self.config_path} not found")
             sys.exit(1)
     
-    def get_base_layout(self) -> List[List[str]]:
-        """Get the base kitchen layout from template"""
-        layout = []
-        for line in self.layout_template:
-            layout.append(list(line))
+    def create_proportional_layout(self, max_width: int = 80, max_height: int = 30) -> List[List[str]]:
+        """
+        Create proportionally accurate L-shaped kitchen
+        Based on real measurements with proper scaling
+        """
+        # Set up scaling
+        self.engine.auto_scale_to_fit(max_width, max_height)
+        self.engine.set_zoom(self.zoom)
+        
+        # Get scaled wall segments
+        segments = self.engine.calculate_wall_segments()
+        
+        # Calculate wall lengths in characters
+        n1 = segments.get("N1", {}).get("chars", 0)
+        n2 = segments.get("N2", {}).get("chars", 0)
+        w1 = segments.get("W1", {}).get("chars", 0)
+        w2 = segments.get("W2", {}).get("chars", 0)
+        w3 = segments.get("W3", {}).get("chars", 0)
+        s1 = segments.get("S1", {}).get("chars", 0)
+        s2 = segments.get("S2", {}).get("chars", 0)
+        s3 = segments.get("S3", {}).get("chars", 0)
+        e1 = segments.get("E1", {}).get("chars", 0)
+        e2 = segments.get("E2", {}).get("chars", 0)
+        e3 = segments.get("E3", {}).get("chars", 0)
+        
+        # Total dimensions
+        north_total = n1 + n2  # Full width at top
+        west_total = w1 + w2 + w3  # Full height on left
+        south_total = s1 + s2 + s3  # Shorter bottom
+        
+        # Canvas size: north width × west height (main room)
+        width = north_total
+        height = west_total
+        
+        # Initialize with floor
+        layout = [[' ' for _ in range(width)] for _ in range(height)]
+        
+        # === NORTH WALL (top) ===
+        x = 0
+        # N1 - wall segment
+        for i in range(n1):
+            if x < width:
+                layout[0][x] = '#'
+                x += 1
+        # N2 - window
+        for i in range(n2):
+            if x < width:
+                layout[0][x] = '='
+                x += 1
+        
+        # === WEST WALL (left) ===
+        y = 0
+        # W1 - wall
+        for i in range(w1):
+            if y < height:
+                layout[y][0] = '#'
+                y += 1
+        # W2 - door
+        for i in range(w2):
+            if y < height:
+                layout[y][0] = '|'
+                y += 1
+        # W3 - wall
+        for i in range(w3):
+            if y < height:
+                layout[y][0] = '#'
+                y += 1
+        
+        # === SOUTH WALL (bottom, short) ===
+        x = 0
+        # S1 - wall
+        for i in range(s1):
+            if x < width:
+                layout[height-1][x] = '#'
+                x += 1
+        # S2 - door
+        for i in range(s2):
+            if x < width:
+                layout[height-1][x] = '|'
+                x += 1
+        # S3 - wall
+        for i in range(s3):
+            if x < width:
+                layout[height-1][x] = '#'
+                x += 1
+        # x now points to where south wall ends (start of alcove)
+        south_end_x = x
+        
+        # === EAST WALL (right, complex with alcove) ===
+        # E3 goes down the right edge from top
+        for y in range(e3):
+            if y < height:
+                layout[y][width-1] = '#'
+        
+        # After E3, alcove begins
+        alcove_top_y = e3
+        
+        # E2 creates the alcove:
+        # - Horizontal wall from where south ends to right edge
+        # - Vertical wall down from there
+        if alcove_top_y < height:
+            # Horizontal part (top of alcove)
+            for x in range(south_end_x, width):
+                layout[alcove_top_y][x] = '#'
+            
+            # Vertical part (left side of alcove going down)
+            for y in range(alcove_top_y + 1, min(alcove_top_y + e2, height)):
+                layout[y][south_end_x] = '#'
+        
+        # E1 continues down inside the alcove
+        e1_start_y = alcove_top_y + e2
+        for y in range(e1_start_y, min(e1_start_y + e1, height)):
+            if south_end_x < width:
+                layout[y][south_end_x] = '#'
+        
         return layout
     
-    def place_furniture(self, layout: List[List[str]], furniture_type: str, 
-                       x: int, y: int) -> List[List[str]]:
-        """Place furniture in the room at specific coordinates"""
-        symbol = self.furniture_symbols.get(furniture_type, '?')
+    def add_compass_labels(self, layout: List[List[str]]) -> List[str]:
+        """Add N/S/E/W compass labels"""
+        width = len(layout[0]) if layout else 0
+        result = []
         
-        if (0 <= y < len(layout) and 0 <= x < len(layout[y]) and 
-            layout[y][x] == self.furniture_symbols['floor']):
-            layout[y][x] = symbol
+        # North label
+        result.append(" " * (width // 2) + "N")
         
-        return layout
+        # Layout with W/E labels
+        for i, row in enumerate(layout):
+            row_str = ''.join(row)
+            if i == len(layout) // 2:
+                result.append(f"W {row_str} E")
+            else:
+                result.append(f"  {row_str}")
+        
+        # South label
+        result.append(" " * (width // 2) + "S")
+        
+        return result
     
     def layout_to_string(self, layout: List[List[str]]) -> str:
-        """Convert layout to string"""
-        return '\n'.join([''.join(row) for row in layout])
+        labeled = self.add_compass_labels(layout)
+        return '\n'.join(labeled)
     
-    def print_legend(self):
-        """Print the legend"""
-        print("\nLegend:")
-        items = [
-            ('T', 'Table'),
-            ('c', 'Chair'),
-            ('F', 'Fridge'),
-            ('s', 'Stove'),
-            ('k', 'Sink'),
-            ('-', 'Counter'),
-            ('|', 'Door'),
-            ('=', 'Window'),
-            ('#', 'Wall')
-        ]
-        for symbol, name in items:
-            print(f"  {symbol}: {name}")
+    def print_info(self):
+        """Print measurement and scale information"""
+        measurements = self.config.get("wall_measurements", {})
+        segments = self.engine.calculate_wall_segments()
         
-        print("\nWall Labels:")
-        print("  N: North Wall")
-        print("  S: South Wall")
-        print("  E: East Wall")
-        print("  W: West Wall")
+        print(f"\n{'='*60}")
+        print("Scale Information:")
+        print(f"{'='*60}")
+        self.engine.print_scale_info()
+        
+        # Calculate totals
+        north = measurements['N1']['measurement_inches'] + measurements['N2']['measurement_inches']
+        west = measurements['W1']['measurement_inches'] + measurements['W2']['measurement_inches'] + measurements['W3']['measurement_inches']
+        south = measurements['S1']['measurement_inches'] + measurements['S2']['measurement_inches'] + measurements['S3']['measurement_inches']
+        east = measurements['E1']['measurement_inches'] + measurements['E2']['measurement_inches'] + measurements['E3']['measurement_inches']
+        
+        n_chars = sum(segments[s]["chars"] for s in ["N1", "N2"] if s in segments)
+        w_chars = sum(segments[s]["chars"] for s in ["W1", "W2", "W3"] if s in segments)
+        s_chars = sum(segments[s]["chars"] for s in ["S1", "S2", "S3"] if s in segments)
+        
+        print(f"\n{'='*60}")
+        print("Wall Totals:")
+        print(f"{'='*60}")
+        print(f"  North: {north}\" → {n_chars} chars")
+        print(f"  West:  {west}\" → {w_chars} chars")
+        print(f"  South: {south}\" → {s_chars} chars (SHORT - creates L)")
+        print(f"  East:  {east}\"")
+        print(f"\nProportions:")
+        print(f"  Aspect ratio (N/W): {n_chars}/{w_chars} = {n_chars/w_chars:.2f}")
+        print(f"  Expected ratio: {north/west:.2f}")
+        print(f"  Match: {'✅ CORRECT' if abs(n_chars/w_chars - north/west) < 0.1 else '❌ OFF'}")
+        
+        print(f"\n{'='*60}")
+        print("Wall Measurements:")
+        print(f"{'='*60}")
+        walls = {
+            "North": ["N1", "N2"],
+            "West": ["W1", "W2", "W3"],
+            "South": ["S1", "S2", "S3"],
+            "East": ["E1", "E2", "E3"]
+        }
+        
+        for wall_name, segs in walls.items():
+            print(f"  {wall_name}:")
+            for seg in segs:
+                if seg in measurements:
+                    d = measurements[seg]
+                    print(f"    {d['symbol']}{seg} = {d['measurement_inches']}\" ({d['type']})")
     
-    def print_measurements(self):
-        """Print wall measurements"""
-        print("\nWall Measurements:")
-        
-        wall_measurements = self.config.get("wall_measurements", {})
-        
-        # Sort by wall orientation and segment
-        order = ["N1", "N2", "W1", "W2", "W3", "S1", "S2", "S3", "E1", "E2", "E3"]
-        
-        for segment_id in order:
-            if segment_id in wall_measurements:
-                data = wall_measurements[segment_id]
-                symbol = data["symbol"]
-                inches = data["measurement_inches"]
-                seg_type = data["type"]
-                print(f"{symbol}{segment_id} = {inches}\" ({seg_type})")
-    
-    def generate_kitchen(self) -> List[List[str]]:
-        """Generate the kitchen layout"""
-        return self.get_base_layout()
-    
-    def analyze_layout(self):
-        """Analyze and print layout information"""
-        layout = self.get_base_layout()
-        
-        print("\nLayout Analysis:")
-        print(f"  Height: {len(layout)} lines")
-        print(f"  Width: {max(len(row) for row in layout)} characters")
-        
-        # Count wall segments
-        wall_measurements = self.config.get("wall_measurements", {})
-        print(f"  Total wall segments: {len(wall_measurements)}")
-        
-        # Calculate total perimeter
-        total_inches = sum(data["measurement_inches"] for data in wall_measurements.values())
-        total_feet = total_inches / 12
-        print(f"  Total wall length: {total_inches}\" ({total_feet:.2f}')")
+    def generate_kitchen(self, max_width: int = 80, max_height: int = 30) -> List[List[str]]:
+        return self.create_proportional_layout(max_width, max_height)
 
 
 def main():
-    """Main function to generate kitchen layouts"""
-    print("Kitchen Layout Generator")
-    print("=" * 50)
+    import argparse
     
-    # Create generator
-    generator = KitchenLayoutGenerator()
+    parser = argparse.ArgumentParser(description='Generate proportionally accurate kitchen layouts')
+    parser.add_argument('--zoom', type=float, default=1.0, help='Zoom level (0.5-2.0)')
+    parser.add_argument('--width', type=int, default=80, help='Max width in characters')
+    parser.add_argument('--height', type=int, default=30, help='Max height in characters')
     
-    # Generate and display kitchen layout
-    layout = generator.generate_kitchen()
-    print("\nKitchen Layout:")
+    args = parser.parse_args()
+    
+    print("Kitchen Layout Generator - Proportionally Accurate")
+    print("=" * 60)
+    
+    generator = KitchenLayoutGenerator(zoom=args.zoom)
+    layout = generator.generate_kitchen(max_width=args.width, max_height=args.height)
+    
+    print("\nProportionally Accurate Kitchen Layout:")
     print(generator.layout_to_string(layout))
     
-    # Print legend and measurements
-    generator.print_legend()
-    generator.print_measurements()
+    generator.print_info()
     
-    # Print analysis
-    generator.analyze_layout()
+    print(f"\n{'='*60}")
+    print("Usage:")
+    print(f"{'='*60}")
+    print("  python3 scripts/kitchen_layout_generator.py")
+    print("  python3 scripts/kitchen_layout_generator.py --zoom 0.5")
+    print("  python3 scripts/kitchen_layout_generator.py --zoom 1.5")
+    print("  python3 scripts/kitchen_layout_generator.py --width 120 --height 50")
 
 
 if __name__ == "__main__":

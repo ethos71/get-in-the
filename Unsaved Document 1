@@ -1,0 +1,45 @@
+Kitchen Layout:
+             N              
+  ########N1######==N2===## 
+  #W1                     # 
+  #                       #E3 
+  |W2                     # 
+  #                       # 
+W #                       # E
+  #                       # 
+  #W3                     # 
+  #                  ###E2# 
+  #                  #E1    
+  #                  #      
+  #####S1#####|S2#S3##      
+              S             
+
+Legend:
+  T: Table
+  c: Chair
+  F: Fridge
+  s: Stove
+  k: Sink
+  -: Counter
+  |: Door
+  =: Window
+  #: Wall
+Wall Labels:
+  N: North Wall
+  S: South Wall
+  E: East Wall
+  W: West Wall
+
+
+#N1 = 87"
+=N2 = 86" 
+#W1 = 28"
+|W2 = 31.5"
+#W3 = 72.75"
+#S1 = 90.75"
+|S2 = 32"
+#S3 = 4.5"
+#E1 = 32.75"
+#E2 = 46.75"
+#E3 = 99.5"
+
