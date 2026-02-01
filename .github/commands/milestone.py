@@ -114,7 +114,10 @@ def create_milestone(message=None, tag=None):
     if not message:
         timestamp = datetime.now().strftime("%Y-%m-%d")
         summary = get_kitchen_summary()
-        message = f"Milestone: {summary} - {timestamp}"
+        message = f"Milestone {timestamp}"
+    
+    # Escape special characters in commit message
+    message = message.replace('"', '\\"')
     
     print(f"📝 Commit message: {message}")
     print()
@@ -134,9 +137,19 @@ def create_milestone(message=None, tag=None):
             print("  ⚠️  Tag creation failed")
         print()
     
+    # Step 7: Push to remote
+    print("🚀 Step 6: Push to remote")
+    if not run_command("git push", "Pushing commits"):
+        print("  ⚠️  Push failed (check remote configuration)")
+    
+    if tag:
+        if not run_command("git push --tags", "Pushing tags"):
+            print("  ⚠️  Tag push failed")
+    print()
+    
     # Summary
     print("=" * 60)
-    print("✅ Milestone created successfully!")
+    print("✅ Milestone created and pushed!")
     print("=" * 60)
     print()
     print("Files committed:")
@@ -150,9 +163,7 @@ def create_milestone(message=None, tag=None):
         print(f"Tag: {tag}")
         print()
     
-    print("Next steps:")
-    print("  - View layouts: open output/kitchen_layout.svg")
-    print("  - Push to remote: git push && git push --tags")
+    print("View layouts: open output/kitchen_layout.svg")
     print()
 
 
