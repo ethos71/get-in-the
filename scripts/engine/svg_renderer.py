@@ -126,16 +126,21 @@ class SVGRenderer:
                 seg_length = self.inches_to_pixels(seg["measurement_inches"])
                 direction = seg.get("direction", "E")
                 
+                # SVG coordinate system: Y increases downward
                 if direction == "N":
-                    y -= seg_length
+                    y -= seg_length  # Up
                 elif direction == "NE":
-                    x += seg_length * math.cos(math.radians(45))
-                    y -= seg_length * math.sin(math.radians(45))
+                    # Northeast: right and up
+                    x += seg_length * math.cos(math.radians(-45))
+                    y += seg_length * math.sin(math.radians(-45))
                 elif direction == "E":
                     x += seg_length
                 elif direction == "SE":
-                    x += seg_length * math.cos(math.radians(-45))
-                    y += seg_length * math.sin(math.radians(-45))
+                    # Southeast: right and down
+                    x += seg_length * math.cos(math.radians(45))
+                    y += seg_length * math.sin(math.radians(45))
+                elif direction == "S":
+                    y += seg_length  # Down
                 
                 path_points.append(f"L {x} {y}")
         else:
@@ -191,20 +196,24 @@ class SVGRenderer:
                 direction = seg.get("direction", "E")
                 
                 # Calculate end point based on direction
+                # SVG coordinate system: Y increases downward
                 if direction == "N":
                     end_x = start_x
-                    end_y = start_y - seg_length
+                    end_y = start_y - seg_length  # Up
                 elif direction == "NE":
-                    # 45 degree angle northeast
-                    end_x = start_x + seg_length * math.cos(math.radians(45))
-                    end_y = start_y - seg_length * math.sin(math.radians(45))
+                    # Northeast: right and up
+                    end_x = start_x + seg_length * math.cos(math.radians(-45))
+                    end_y = start_y + seg_length * math.sin(math.radians(-45))
                 elif direction == "E":
                     end_x = start_x + seg_length
                     end_y = start_y
                 elif direction == "SE":
-                    # 45 degree angle southeast
-                    end_x = start_x + seg_length * math.cos(math.radians(-45))
-                    end_y = start_y + seg_length * math.sin(math.radians(-45))
+                    # Southeast: right and down (positive Y in SVG)
+                    end_x = start_x + seg_length * math.cos(math.radians(45))
+                    end_y = start_y + seg_length * math.sin(math.radians(45))
+                elif direction == "S":
+                    end_x = start_x
+                    end_y = start_y + seg_length  # Down
                 else:
                     end_x = start_x + seg_length
                     end_y = start_y
