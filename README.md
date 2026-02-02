@@ -44,10 +44,31 @@ Ask `@getinthe` in Copilot Chat to:
 - Validate your kitchen design
 - Make changes to the floor plan
 - Create milestones
+- Add items to shopping list
 
 Example: "@getinthe update the north wall window to 90 inches"
 
 After changes: `docker/run.sh milestone "Updated north window"`
+
+## Shopping List
+
+Edit `scripts/config/kitchen_measurements.json` to add items:
+
+```json
+"shopping_list": {
+  "wall_cabinets": [
+    {"quantity": 2, "width_inches": 30, "height_inches": 36}
+  ],
+  "base_cabinets": [
+    {"quantity": 3, "width_inches": 24}
+  ],
+  "appliances": [
+    {"quantity": 1, "name": "Refrigerator"}
+  ]
+}
+```
+
+The shopping list appears on the right side of the SVG output.
 
 ## Other Commands
 

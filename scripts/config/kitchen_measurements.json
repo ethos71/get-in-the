@@ -1,7 +1,7 @@
 {
   "layout_ascii": [
     "             N              ",
-    "  ########N1######==N2===## ",
+    "  ####N1====N1===N2======## ",
     "  #W1                     # ",
     "  #                       #E3",
     "  |W2                     # ",
@@ -78,7 +78,24 @@
     "N1": {
       "type": "wall",
       "measurement_inches": 87,
-      "symbol": "#"
+      "symbol": "#",
+      "segments": [
+        {
+          "type": "wall",
+          "measurement_inches": 23.25,
+          "symbol": "#"
+        },
+        {
+          "type": "window",
+          "measurement_inches": 31,
+          "symbol": "="
+        },
+        {
+          "type": "wall",
+          "measurement_inches": 32.75,
+          "symbol": "#"
+        }
+      ]
     },
     "N2": {
       "type": "alcove",
@@ -173,5 +190,106 @@
       "measurement_inches": 99.5,
       "symbol": "#"
     }
+  },
+  "cabinet_standards": {
+    "base_cabinets": {
+      "height_inches": 34.5,
+      "height_with_countertop_inches": 36,
+      "depth_inches": 24,
+      "countertop_overhang_inches": 1,
+      "toe_kick_height_inches": 4,
+      "common_widths_inches": [
+        12,
+        15,
+        18,
+        21,
+        24,
+        27,
+        30,
+        33,
+        36,
+        42,
+        48
+      ],
+      "notes": "Standard base cabinets installed on floor. Countertop adds ~1.5\" to height."
+    },
+    "wall_cabinets": {
+      "common_heights_inches": [
+        12,
+        15,
+        18,
+        24,
+        30,
+        36,
+        42
+      ],
+      "depth_inches": 12,
+      "deep_depth_inches": 24,
+      "common_widths_inches": [
+        9,
+        12,
+        15,
+        18,
+        21,
+        24,
+        27,
+        30,
+        33,
+        36
+      ],
+      "bottom_above_countertop_inches": 18,
+      "bottom_above_floor_inches": 54,
+      "notes": "Wall cabinets hang 18\" above countertop. Most common heights are 30\", 36\", or 42\"."
+    },
+    "tall_cabinets": {
+      "heights_inches": [
+        84,
+        90,
+        96
+      ],
+      "depth_inches": [
+        12,
+        24
+      ],
+      "widths_inches": [
+        12,
+        18,
+        24,
+        30,
+        36
+      ],
+      "notes": "Pantry and tall cabinets, floor to near-ceiling."
+    }
+  },
+  "shopping_list": {
+    "wall_cabinets": [
+      {
+        "quantity": 2,
+        "width_inches": 30,
+        "height_inches": 36,
+        "notes": "Standard wall cabinet"
+      }
+    ],
+    "base_cabinets": [
+      {
+        "quantity": 3,
+        "width_inches": 24,
+        "notes": "Standard base cabinet"
+      }
+    ],
+    "appliances": [
+      {
+        "quantity": 1,
+        "name": "Refrigerator",
+        "notes": "36\" wide"
+      }
+    ],
+    "other": [
+      {
+        "quantity": 1,
+        "name": "Countertop",
+        "notes": "Measure after cabinets"
+      }
+    ]
   }
 }
