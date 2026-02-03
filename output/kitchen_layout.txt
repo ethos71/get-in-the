@@ -44,15 +44,15 @@ North:
 
 West:
   #W1 = 28" (wall)
-  |W2 = 31.5" (door)
+   W2 = 31.5" (entryway)
   #W3 = 72.75" (wall)
 
 South:
   #S1 = 90.75" (wall)
-  |S2 = 32" (door)
+   S2 = 32" (entryway)
   #S3 = 4.5" (wall)
 
 East:
-  #E1 = 32.75" (wall)
+  |E1 = 32.75" (door)
   #E2 = 46.75" (wall)
   #E3 = 99.5" (wall)

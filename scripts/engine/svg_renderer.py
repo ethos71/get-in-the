@@ -96,7 +96,12 @@ class SVGRenderer:
         # Create left layout - Wall Cabinets
         y_offset = margin + self.inches_to_pixels(north_alcove_depth)
         left_group = dwg.g(transform=f"translate({margin},{y_offset})")
-        self._render_floor_plan(dwg, left_group, "Wall Cabinets")
+        north_w_left, west_h_left, _ = self._render_floor_plan(dwg, left_group, "Wall Cabinets")
+        
+        # Add wall cabinets to wall cabinets view
+        from scripts.engine.cabinet_renderer import CabinetRenderer
+        wall_cabinet_renderer = CabinetRenderer(self.measurements, self.scale, self)
+        wall_cabinet_renderer.render_wall_cabinets(dwg, left_group, north_w_left, west_h_left)
         
         # Add scale info to left
         scale_text = dwg.text(f'Scale: {self.scale} px/in', 
@@ -111,7 +116,12 @@ class SVGRenderer:
         # Create right layout - Base Cabinets
         right_x_offset = layout_width + gap_between
         right_group = dwg.g(transform=f"translate({right_x_offset},{y_offset})")
-        self._render_floor_plan(dwg, right_group, "Base Cabinets")
+        north_w, west_h, _ = self._render_floor_plan(dwg, right_group, "Base Cabinets")
+        
+        # Add cabinets and appliances to base cabinets view using clean renderer
+        from scripts.engine.cabinet_renderer import CabinetRenderer
+        cabinet_renderer = CabinetRenderer(self.measurements, self.scale, self)
+        cabinet_renderer.render_all(dwg, right_group, north_w, west_h)
         
         # Add scale info to right
         scale_text_right = dwg.text(f'Scale: {self.scale} px/in', 
@@ -444,14 +454,34 @@ class SVGRenderer:
         self._add_dimension(dwg, walls_group, south_wall_end_x, e3_height - 20, east_x, e3_height - 20,
                            f'E2: {e2_total}"')
         
-        # E1 - alcove right side
+        # E1 - check if door or wall
         e1_height = self.inches_to_pixels(wall_measurements["E1"]["measurement_inches"])
-        walls_group.add(dwg.line(
-            start=(south_wall_end_x, e3_height),
-            end=(south_wall_end_x, e3_height + e1_height),
-            stroke=self.wall_color,
-            stroke_width=self.wall_width
-        ))
+        e1_type = wall_measurements["E1"].get("type", "wall")
+        
+        if e1_type == "door":
+            # Draw door with arc swinging westward into kitchen (hinge on north side)
+            walls_group.add(dwg.line(
+                start=(south_wall_end_x, e3_height),
+                end=(south_wall_end_x, e3_height + e1_height),
+                stroke=self.door_color,
+                stroke_width=self.door_width
+            ))
+            # Door arc - hinge on north, swing westward from south end
+            radius = e1_height
+            walls_group.add(dwg.path(
+                d=f"M {south_wall_end_x} {e3_height + e1_height} A {radius} {radius} 0 0 1 {south_wall_end_x - radius} {e3_height}",
+                fill='none',
+                stroke=self.door_color,
+                stroke_width=1,
+                stroke_dasharray='2,2'
+            ))
+        else:
+            walls_group.add(dwg.line(
+                start=(south_wall_end_x, e3_height),
+                end=(south_wall_end_x, e3_height + e1_height),
+                stroke=self.wall_color,
+                stroke_width=self.wall_width
+            ))
         self._add_dimension(dwg, walls_group, south_wall_end_x + 20, e3_height, south_wall_end_x + 20, e3_height + e1_height,
                            f'E1: {wall_measurements["E1"]["measurement_inches"]}"', vertical=True)
         
@@ -470,25 +500,39 @@ class SVGRenderer:
                            f'S1: {wall_measurements["S1"]["measurement_inches"]}"')
         x_pos += s1_width
         
-        # S2 - door
+        # S2 - check if entryway or door
         s2_width = self.inches_to_pixels(wall_measurements["S2"]["measurement_inches"])
-        walls_group.add(dwg.line(
-            start=(x_pos, y_pos),
-            end=(x_pos + s2_width, y_pos),
-            stroke=self.door_color,
-            stroke_width=self.door_width
-        ))
-        # Door arc
-        radius = s2_width
-        walls_group.add(dwg.path(
-            d=f"M {x_pos} {y_pos} A {radius} {radius} 0 0 1 {x_pos + radius} {y_pos - radius}",
-            fill='none',
-            stroke=self.door_color,
-            stroke_width=1,
-            stroke_dasharray='3,3'
-        ))
-        self._add_dimension(dwg, walls_group, x_pos, y_pos + 20, x_pos + s2_width, y_pos + 20,
-                           f'S2: {wall_measurements["S2"]["measurement_inches"]}" (door)')
+        s2_type = wall_measurements["S2"].get("type", "door")
+        
+        if s2_type == "entryway":
+            # Draw as dashed line for entryway
+            walls_group.add(dwg.line(
+                start=(x_pos, y_pos),
+                end=(x_pos + s2_width, y_pos),
+                stroke='#999999',
+                stroke_width=1,
+                stroke_dasharray='5,5'
+            ))
+            self._add_dimension(dwg, walls_group, x_pos, y_pos + 20, x_pos + s2_width, y_pos + 20,
+                               f'S2: {wall_measurements["S2"]["measurement_inches"]}" (entryway)')
+        else:
+            # Draw as door with arc
+            walls_group.add(dwg.line(
+                start=(x_pos, y_pos),
+                end=(x_pos + s2_width, y_pos),
+                stroke=self.door_color,
+                stroke_width=self.door_width
+            ))
+            radius = s2_width
+            walls_group.add(dwg.path(
+                d=f"M {x_pos} {y_pos} A {radius} {radius} 0 0 1 {x_pos + radius} {y_pos - radius}",
+                fill='none',
+                stroke=self.door_color,
+                stroke_width=1,
+                stroke_dasharray='3,3'
+            ))
+            self._add_dimension(dwg, walls_group, x_pos, y_pos + 20, x_pos + s2_width, y_pos + 20,
+                               f'S2: {wall_measurements["S2"]["measurement_inches"]}" (door)')
         x_pos += s2_width
         
         # S3
@@ -517,25 +561,39 @@ class SVGRenderer:
                            f'W1: {wall_measurements["W1"]["measurement_inches"]}"', vertical=True)
         y_pos += w1_height
         
-        # W2 - door
+        # W2 - check if entryway or door
         w2_height = self.inches_to_pixels(wall_measurements["W2"]["measurement_inches"])
-        walls_group.add(dwg.line(
-            start=(x_pos, y_pos),
-            end=(x_pos, y_pos + w2_height),
-            stroke=self.door_color,
-            stroke_width=self.door_width
-        ))
-        # Door arc - just flip the sweep direction
-        radius = w2_height
-        walls_group.add(dwg.path(
-            d=f"M {x_pos} {y_pos} A {radius} {radius} 0 0 1 {x_pos + radius} {y_pos + radius}",
-            fill='none',
-            stroke=self.door_color,
-            stroke_width=1,
-            stroke_dasharray='3,3'
-        ))
-        self._add_dimension(dwg, walls_group, x_pos - 20, y_pos, x_pos - 20, y_pos + w2_height,
-                           f'W2: {wall_measurements["W2"]["measurement_inches"]}" (door)', vertical=True)
+        w2_type = wall_measurements["W2"].get("type", "door")
+        
+        if w2_type == "entryway":
+            # Draw as dashed line for entryway
+            walls_group.add(dwg.line(
+                start=(x_pos, y_pos),
+                end=(x_pos, y_pos + w2_height),
+                stroke='#999999',
+                stroke_width=1,
+                stroke_dasharray='5,5'
+            ))
+            self._add_dimension(dwg, walls_group, x_pos - 20, y_pos, x_pos - 20, y_pos + w2_height,
+                               f'W2: {wall_measurements["W2"]["measurement_inches"]}" (entryway)', vertical=True)
+        else:
+            # Draw as door with arc
+            walls_group.add(dwg.line(
+                start=(x_pos, y_pos),
+                end=(x_pos, y_pos + w2_height),
+                stroke=self.door_color,
+                stroke_width=self.door_width
+            ))
+            radius = w2_height
+            walls_group.add(dwg.path(
+                d=f"M {x_pos} {y_pos} A {radius} {radius} 0 0 1 {x_pos + radius} {y_pos + radius}",
+                fill='none',
+                stroke=self.door_color,
+                stroke_width=1,
+                stroke_dasharray='3,3'
+            ))
+            self._add_dimension(dwg, walls_group, x_pos - 20, y_pos, x_pos - 20, y_pos + w2_height,
+                               f'W2: {wall_measurements["W2"]["measurement_inches"]}" (door)', vertical=True)
         y_pos += w2_height
         
         # W3
@@ -607,6 +665,95 @@ class SVGRenderer:
             text['transform'] = f"rotate(-90 {label_x} {label_y})"
         
         group.add(text)
+    
+    def _render_wall_segment(self, dwg, walls_group, start_x, start_y, end_x, end_y, wall_type="wall", orientation='horizontal'):
+        """Render a single wall segment with door arc if needed
+        
+        Args:
+            wall_type: 'wall', 'door', 'entryway', or 'window'
+            orientation: 'horizontal' or 'vertical' - determines door arc direction
+        """
+        if wall_type == "entryway":
+            walls_group.add(dwg.line(
+                start=(start_x, start_y),
+                end=(end_x, end_y),
+                stroke='#999999',
+                stroke_width=1,
+                stroke_dasharray='5,5'
+            ))
+        elif wall_type == "window":
+            walls_group.add(dwg.line(
+                start=(start_x, start_y),
+                end=(end_x, end_y),
+                stroke=self.window_color,
+                stroke_width=self.window_width
+            ))
+            # Window fill
+            if orientation == 'horizontal':
+                walls_group.add(dwg.rect(
+                    insert=(start_x, start_y - 2),
+                    size=(abs(end_x - start_x), 4),
+                    fill=self.window_color,
+                    opacity=0.3
+                ))
+            else:
+                walls_group.add(dwg.rect(
+                    insert=(start_x - 2, start_y),
+                    size=(4, abs(end_y - start_y)),
+                    fill=self.window_color,
+                    opacity=0.3
+                ))
+        elif wall_type == "door":
+            walls_group.add(dwg.line(
+                start=(start_x, start_y),
+                end=(end_x, end_y),
+                stroke=self.door_color,
+                stroke_width=self.door_width
+            ))
+            # Add door arc based on orientation
+            if orientation == 'horizontal':
+                length = abs(end_x - start_x)
+                if end_x > start_x:  # Opening to the right
+                    walls_group.add(dwg.path(
+                        d=f"M {start_x} {start_y} A {length} {length} 0 0 1 {end_x} {start_y - length}",
+                        fill='none',
+                        stroke=self.door_color,
+                        stroke_width=1,
+                        stroke_dasharray='2,2'
+                    ))
+                else:  # Opening to the left
+                    walls_group.add(dwg.path(
+                        d=f"M {start_x} {start_y} A {length} {length} 0 0 0 {end_x} {end_y - length}",
+                        fill='none',
+                        stroke=self.door_color,
+                        stroke_width=1,
+                        stroke_dasharray='2,2'
+                    ))
+            else:  # vertical
+                length = abs(end_y - start_y)
+                if end_y > start_y:  # Opening downward (swing westward into kitchen)
+                    walls_group.add(dwg.path(
+                        d=f"M {start_x} {start_y} A {length} {length} 0 0 0 {start_x - length} {end_y}",
+                        fill='none',
+                        stroke=self.door_color,
+                        stroke_width=1,
+                        stroke_dasharray='2,2'
+                    ))
+                else:  # Opening upward
+                    walls_group.add(dwg.path(
+                        d=f"M {start_x} {start_y} A {length} {length} 0 0 1 {start_x - length} {end_y}",
+                        fill='none',
+                        stroke=self.door_color,
+                        stroke_width=1,
+                        stroke_dasharray='2,2'
+                    ))
+        else:  # Regular wall
+            walls_group.add(dwg.line(
+                start=(start_x, start_y),
+                end=(end_x, end_y),
+                stroke=self.wall_color,
+                stroke_width=self.wall_width
+            ))
     
     def _add_compass(self, dwg, group, x, y):
         """Add north compass indicator"""

@@ -134,9 +134,9 @@
       "symbol": "#"
     },
     "W2": {
-      "type": "door",
+      "type": "entryway",
       "measurement_inches": 31.5,
-      "symbol": "|"
+      "symbol": " "
     },
     "W3": {
       "type": "wall",
@@ -149,9 +149,9 @@
       "symbol": "#"
     },
     "S2": {
-      "type": "door",
+      "type": "entryway",
       "measurement_inches": 32,
-      "symbol": "|"
+      "symbol": " "
     },
     "S3": {
       "type": "wall",
@@ -159,31 +159,14 @@
       "symbol": "#"
     },
     "E1": {
-      "type": "wall",
+      "type": "door",
       "measurement_inches": 32.75,
-      "symbol": "#"
+      "symbol": "|"
     },
     "E2": {
       "type": "wall",
       "measurement_inches": 46.75,
-      "symbol": "#",
-      "segments": [
-        {
-          "type": "wall",
-          "measurement_inches": 8.25,
-          "symbol": "#"
-        },
-        {
-          "type": "door",
-          "measurement_inches": 18.25,
-          "symbol": "|"
-        },
-        {
-          "type": "wall",
-          "measurement_inches": 20.25,
-          "symbol": "#"
-        }
-      ]
+      "symbol": "#"
     },
     "E3": {
       "type": "wall",
@@ -264,31 +247,290 @@
   "shopping_list": {
     "wall_cabinets": [
       {
+        "quantity": 7,
+        "width_inches": 18,
+        "height_inches": 42,
+        "notes": "S1, W3, E3 walls"
+      },
+      {
         "quantity": 2,
-        "width_inches": 30,
-        "height_inches": 36,
-        "notes": "Standard wall cabinet"
+        "width_inches": 24,
+        "height_inches": 42,
+        "notes": "N1 over dishwasher and E3 south"
+      },
+      {
+        "quantity": 1,
+        "width_inches": 21,
+        "height_inches": 42,
+        "notes": "N1 west of window"
+      },
+      {
+        "quantity": 2,
+        "width_inches": 9,
+        "height_inches": 42,
+        "notes": "N1 east corner and E3 over counter"
       }
     ],
     "base_cabinets": [
       {
-        "quantity": 3,
+        "quantity": 5,
+        "width_inches": 18,
+        "notes": "S1, W3 walls"
+      },
+      {
+        "quantity": 1,
         "width_inches": 24,
-        "notes": "Standard base cabinet"
+        "notes": "E3 south of range"
+      },
+      {
+        "quantity": 1,
+        "width_inches": 9,
+        "notes": "E3 between fridge and range"
+      },
+      {
+        "quantity": 1,
+        "width_inches": 22,
+        "notes": "N1 west of sink"
+      },
+      {
+        "quantity": 1,
+        "width_inches": 36,
+        "notes": "SW corner lazy susan"
+      },
+      {
+        "quantity": 1,
+        "width_inches": 33,
+        "notes": "Sink base"
       }
     ],
     "appliances": [
       {
         "quantity": 1,
         "name": "Refrigerator",
-        "notes": "36\" wide"
+        "width_inches": 36
+      },
+      {
+        "quantity": 1,
+        "name": "Range/Stove",
+        "width_inches": 30
+      },
+      {
+        "quantity": 1,
+        "name": "Kitchen Sink",
+        "width_inches": 33
+      },
+      {
+        "quantity": 1,
+        "name": "Dishwasher",
+        "width_inches": 24
       }
     ],
     "other": [
       {
         "quantity": 1,
         "name": "Countertop",
-        "notes": "Measure after cabinets"
+        "notes": "~250 linear inches"
+      },
+      {
+        "quantity": 1,
+        "name": "Range Hood",
+        "notes": "30\" width"
+      }
+    ]
+  },
+  "appliances": {
+    "fridge": {
+      "location": "E3",
+      "position_from_start_inches": 63.5,
+      "width_inches": 36,
+      "depth_inches": 24,
+      "height_inches": 70,
+      "notes": "South end of E3 wall (99.5 - 36 = 63.5)"
+    },
+    "range": {
+      "location": "E3",
+      "position_from_start_inches": 24,
+      "width_inches": 30,
+      "depth_inches": 24,
+      "height_inches": 36,
+      "notes": "Between E3-1 cabinet and fridge"
+    },
+    "sink": {
+      "location": "N1",
+      "position_from_start_inches": 22.25,
+      "width_inches": 33,
+      "depth_inches": 22,
+      "notes": "Centered under window on N1 wall"
+    },
+    "dishwasher": {
+      "location": "N1",
+      "position_from_start_inches": 55.25,
+      "width_inches": 24,
+      "depth_inches": 24,
+      "height_inches": 34,
+      "notes": "East of sink on N1 wall"
+    },
+    "corner_cabinet": {
+      "location": "SW_CORNER",
+      "position_w3_from_start_inches": 96.25,
+      "position_s1_from_start_inches": 0,
+      "width_inches": 36,
+      "depth_inches": 36,
+      "height_inches": 84,
+      "notes": "Floor to ceiling corner cabinet at SW corner (W3-S1)"
+    }
+  },
+  "base_cabinets": {
+    "N1": [
+      {
+        "type": "base",
+        "width_inches": 22,
+        "position_from_start": 0,
+        "notes": "West of sink"
+      },
+      {
+        "type": "sink_base",
+        "width_inches": 33,
+        "position_from_start": 22.25,
+        "notes": "Sink centered under window"
+      },
+      {
+        "type": "dishwasher_space",
+        "width_inches": 24,
+        "position_from_start": 55.25,
+        "notes": "Dishwasher east of sink"
+      },
+      {
+        "type": "base",
+        "width_inches": 8,
+        "position_from_start": 79.25,
+        "notes": "Small cabinet to corner"
+      }
+    ],
+    "E3": [
+      {
+        "type": "base",
+        "width_inches": 9,
+        "position_from_start": 54,
+        "notes": "Between range and fridge"
+      },
+      {
+        "type": "fridge_space",
+        "width_inches": 36,
+        "position_from_start": 63.5,
+        "notes": "Fridge at south end of E3"
+      }
+    ],
+    "E2": [],
+    "S1": [
+      {
+        "type": "lazy_susan",
+        "width_inches": 36,
+        "position_from_start": 0,
+        "notes": "SW corner lazy susan only"
+      },
+      {
+        "type": "base",
+        "width_inches": 18,
+        "position_from_start": 36
+      },
+      {
+        "type": "base",
+        "width_inches": 18,
+        "position_from_start": 54
+      },
+      {
+        "type": "base",
+        "width_inches": 18,
+        "position_from_start": 72
+      }
+    ],
+    "W3": [
+      {
+        "type": "base",
+        "width_inches": 18,
+        "position_from_start": 0,
+        "notes": "North end"
+      },
+      {
+        "type": "base",
+        "width_inches": 18,
+        "position_from_start": 18
+      }
+    ]
+  },
+  "wall_cabinets": {
+    "N1": [
+      {
+        "width_inches": 21,
+        "height_inches": 42,
+        "position_from_start": 0,
+        "notes": "West of window"
+      },
+      {
+        "width_inches": 24,
+        "height_inches": 42,
+        "position_from_start": 55.25,
+        "notes": "Over dishwasher"
+      },
+      {
+        "width_inches": 9,
+        "height_inches": 42,
+        "position_from_start": 78,
+        "notes": "East to corner"
+      }
+    ],
+    "E3": [
+      {
+        "width_inches": 30,
+        "height_inches": 42,
+        "position_from_start": 24,
+        "notes": "Above range (24-54\")"
+      },
+      {
+        "width_inches": 9,
+        "height_inches": 42,
+        "position_from_start": 54,
+        "notes": "Above E3-1 base cabinet (54-63\")"
+      },
+      {
+        "width_inches": 36,
+        "height_inches": 42,
+        "position_from_start": 63.5,
+        "notes": "Above fridge (63.5-99.5\")"
+      }
+    ],
+    "E2": [],
+    "S1": [
+      {
+        "width_inches": 18,
+        "height_inches": 42,
+        "position_from_start": 36,
+        "notes": "No cabinet over lazy susan"
+      },
+      {
+        "width_inches": 18,
+        "height_inches": 42,
+        "position_from_start": 54
+      },
+      {
+        "width_inches": 18,
+        "height_inches": 42,
+        "position_from_start": 72
+      }
+    ],
+    "W3": [
+      {
+        "width_inches": 18,
+        "height_inches": 42,
+        "position_from_start": 0,
+        "notes": "North end of W3"
+      },
+      {
+        "width_inches": 18,
+        "height_inches": 42,
+        "position_from_start": 18,
+        "notes": "Fill gap"
       }
     ]
   }
