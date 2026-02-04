@@ -53,10 +53,7 @@ class CabinetRenderer:
         # Render appliances first (highest priority)
         self._render_appliances(dwg, group, appliances, north_width, west_height)
         
-        # Render corner cabinet (second priority, marks corner space)
-        self._render_corner_cabinet(dwg, group, appliances, north_width, west_height, CABINET_DEPTH)
-        
-        # Render base cabinets (check for overlaps)
+        # Render base cabinets (check for overlaps with lazy susan)
         self._render_base_cabinets(dwg, group, base_cabinets, north_width, west_height, CABINET_DEPTH)
     
     def _render_appliances(self, dwg, group, appliances, north_width, west_height):
@@ -157,36 +154,80 @@ class CabinetRenderer:
                                   fill='#708090', stroke='#000', stroke_width=1))
                 group.add(dwg.text('DW', insert=(px + pw/2, ph/2),
                                   text_anchor='middle', font_size='10px', fill='#FFF'))
-    
-    def _render_corner_cabinet(self, dwg, group, appliances, north_width, west_height, CABINET_DEPTH):
-        """Render floor-to-ceiling corner cabinet at SW corner"""
-        if "corner_cabinet" not in appliances:
-            return
         
-        cc = appliances["corner_cabinet"]
-        if cc["location"] == "SW_CORNER":
-            # Corner cabinet is 36"x36" occupying the SW corner
-            cc_size = cc["width_inches"]  # 36"
-            
-            # The corner cabinet is a full 36"x36" square in the corner
-            # It occupies 36" along S1 (east-west) and 36" along W3 (north-south)
-            
-            # Mark S1 space as occupied - 36" along S1 wall, 36" deep (not CABINET_DEPTH)
-            rect_s1 = Rectangle(0, west_height - cc_size, cc_size, cc_size, "CC-S1")
-            self.place_item(rect_s1)
-            
-            # Draw visual corner piece as full 36x36 square
-            px = 0
-            py = self.inches_to_pixels(west_height - cc_size)
-            pw = self.inches_to_pixels(cc_size)
-            ph = self.inches_to_pixels(cc_size)
-            
-            group.add(dwg.rect(insert=(px, py), size=(pw, ph),
-                              fill='#A0522D', stroke='#000', stroke_width=2))
-            group.add(dwg.text('CORNER', insert=(px + pw/2, py + ph/2 - 5),
-                              text_anchor='middle', font_size='8px', font_weight='bold', fill='#FFF'))
-            group.add(dwg.text('CABINET', insert=(px + pw/2, py + ph/2 + 5),
-                              text_anchor='middle', font_size='8px', font_weight='bold', fill='#FFF'))
+        # Stove/Microwave Cabinet on S1
+        if "stove_microwave_cabinet" in appliances:
+            smc = appliances["stove_microwave_cabinet"]
+            if smc["location"] == "S1":
+                x = smc["position_from_start_inches"]
+                y = west_height - smc["depth_inches"]
+                w = smc["width_inches"]
+                h = smc["depth_inches"]
+                
+                rect = Rectangle(x, y, w, h, "STOVE_MICRO")
+                self.place_item(rect)
+                
+                px = self.inches_to_pixels(x)
+                py = self.inches_to_pixels(y)
+                pw = self.inches_to_pixels(w)
+                ph = self.inches_to_pixels(h)
+                
+                group.add(dwg.rect(insert=(px, py), size=(pw, ph),
+                                  fill='#8B4513', stroke='#000', stroke_width=2))
+                group.add(dwg.text('STOVE/', insert=(px + pw/2, py + ph/2 - 8),
+                                  text_anchor='middle', font_size='9px', font_weight='bold', fill='#FFF'))
+                group.add(dwg.text('MICRO', insert=(px + pw/2, py + ph/2 + 2),
+                                  text_anchor='middle', font_size='9px', font_weight='bold', fill='#FFF'))
+                group.add(dwg.text('84"H', insert=(px + pw/2, py + ph/2 + 12),
+                                  text_anchor='middle', font_size='8px', fill='#FFF'))
+        
+        # Fridge tall cabinets on E3
+        if "fridge_cabinet_north" in appliances:
+            cab = appliances["fridge_cabinet_north"]
+            if cab["location"] == "E3":
+                x = north_width - cab["depth_inches"]
+                y = cab["position_from_start_inches"]
+                w = cab["depth_inches"]
+                h = cab["width_inches"]
+                
+                rect = Rectangle(x, y, w, h, "FRIDGE_CAB_N")
+                self.place_item(rect)
+                
+                px = self.inches_to_pixels(x)
+                py = self.inches_to_pixels(y)
+                pw = self.inches_to_pixels(w)
+                ph = self.inches_to_pixels(h)
+                
+                group.add(dwg.rect(insert=(px, py), size=(pw, ph),
+                                  fill='#8B4513', stroke='#000', stroke_width=2))
+                group.add(dwg.text('CAB', insert=(px + pw/2, py + ph/2 - 5),
+                                  text_anchor='middle', font_size='8px', font_weight='bold', fill='#FFF'))
+                group.add(dwg.text('84"H', insert=(px + pw/2, py + ph/2 + 5),
+                                  text_anchor='middle', font_size='7px', fill='#FFF'))
+        
+        if "fridge_cabinet_south" in appliances:
+            cab = appliances["fridge_cabinet_south"]
+            if cab["location"] == "E3":
+                x = north_width - cab["depth_inches"]
+                y = cab["position_from_start_inches"]
+                w = cab["depth_inches"]
+                h = cab["width_inches"]
+                
+                rect = Rectangle(x, y, w, h, "FRIDGE_CAB_S")
+                self.place_item(rect)
+                
+                px = self.inches_to_pixels(x)
+                py = self.inches_to_pixels(y)
+                pw = self.inches_to_pixels(w)
+                ph = self.inches_to_pixels(h)
+                
+                group.add(dwg.rect(insert=(px, py), size=(pw, ph),
+                                  fill='#8B4513', stroke='#000', stroke_width=2))
+                group.add(dwg.text('CAB', insert=(px + pw/2, py + ph/2 - 5),
+                                  text_anchor='middle', font_size='8px', font_weight='bold', fill='#FFF'))
+                group.add(dwg.text('84"H', insert=(px + pw/2, py + ph/2 + 5),
+                                  text_anchor='middle', font_size='7px', fill='#FFF'))
+    
     
     def _render_base_cabinets(self, dwg, group, base_cabinets, north_width, west_height, CABINET_DEPTH):
         """Render all base cabinets, skipping overlaps"""
@@ -226,18 +267,30 @@ class CabinetRenderer:
         # S1 cabinets
         if "S1" in base_cabinets:
             for i, cab in enumerate(base_cabinets["S1"]):
-                if cab.get("type") in ["lazy_susan", "sink_base", "dishwasher_space"]:
+                if cab.get("type") in ["sink_base", "dishwasher_space"]:
                     continue
                 
                 x = cab["position_from_start"]
-                y = west_height - CABINET_DEPTH
+                # Use custom depth for lazy susan, otherwise standard depth
+                depth = cab.get("depth_inches", CABINET_DEPTH)
+                y = west_height - depth
                 w = cab["width_inches"]
-                h = CABINET_DEPTH
+                h = depth
                 
                 rect = Rectangle(x, y, w, h, f"S1-{i+1}")
                 if self.can_place(rect):
                     self.place_item(rect)
-                    self._draw_cabinet(dwg, group, rect, '#D2691E')
+                    # Render lazy susan with special color
+                    if cab.get("type") == "lazy_susan":
+                        self._draw_cabinet(dwg, group, rect, '#A0522D')  # Darker brown for LS
+                        # Add LS label
+                        px = self.inches_to_pixels(x + w/2)
+                        py = self.inches_to_pixels(y + h/2)
+                        group.add(dwg.text('LS', insert=(px, py), 
+                                         text_anchor='middle', font_size='10px', 
+                                         font_weight='bold', fill='#FFF'))
+                    else:
+                        self._draw_cabinet(dwg, group, rect, '#D2691E')
         
         # W3 cabinets
         if "W3" in base_cabinets:
@@ -246,18 +299,27 @@ class CabinetRenderer:
             w3_start = w1_h + w2_h
             
             for i, cab in enumerate(base_cabinets["W3"]):
-                if cab.get("type") in ["lazy_susan"]:
-                    continue
-                
+                # Use custom depth for lazy susan, otherwise standard depth
+                depth = cab.get("depth_inches", CABINET_DEPTH)
                 x = 0
                 y = w3_start + cab["position_from_start"]
-                w = CABINET_DEPTH
+                w = depth
                 h = cab["width_inches"]
                 
                 rect = Rectangle(x, y, w, h, f"W3-{i+1}")
                 if self.can_place(rect):
                     self.place_item(rect)
-                    self._draw_cabinet(dwg, group, rect, '#D2691E')
+                    # Render lazy susan with special color
+                    if cab.get("type") == "lazy_susan":
+                        self._draw_cabinet(dwg, group, rect, '#A0522D')  # Darker brown for LS
+                        # Add LS label
+                        px = self.inches_to_pixels(x + w/2)
+                        py = self.inches_to_pixels(y + h/2)
+                        group.add(dwg.text('LS', insert=(px, py), 
+                                         text_anchor='middle', font_size='10px', 
+                                         font_weight='bold', fill='#FFF'))
+                    else:
+                        self._draw_cabinet(dwg, group, rect, '#D2691E')
 
     
     def _draw_cabinet(self, dwg, group, rect, color):
@@ -372,9 +434,11 @@ class CabinetRenderer:
             w3_start = w1_h + w2_h
             
             for i, cab in enumerate(wall_cabinets["W3"]):
+                # Use custom depth for lazy susan, otherwise standard depth
+                depth = cab.get("depth_inches", CABINET_DEPTH)
                 x = 0
                 y = w3_start + cab["position_from_start"]
-                w = CABINET_DEPTH
+                w = depth
                 h = cab["width_inches"]
                 
                 px = 0
@@ -382,11 +446,18 @@ class CabinetRenderer:
                 pw = self.inches_to_pixels(w)
                 ph = self.inches_to_pixels(h)
                 
-                group.add(dwg.rect(insert=(px, py), size=(pw, ph),
-                                  fill='#CD853F', stroke='#000', stroke_width=1, opacity=0.8))
-                group.add(dwg.text(f'W3-{i+1}', insert=(px + pw/2, py + ph/2 - 5),
-                                  text_anchor='middle', font_size='8px', font_weight='bold', fill='#000'))
-                group.add(dwg.text(f'{h}"W', insert=(px + pw/2, py + ph/2 + 3),
-                                  text_anchor='middle', font_size='7px', fill='#000'))
-                group.add(dwg.text(f'{cab["height_inches"]}"H', insert=(px + pw/2, py + ph/2 + 10),
-                                  text_anchor='middle', font_size='7px', fill='#000'))
+                # Render lazy susan with special color
+                if cab.get("type") == "lazy_susan":
+                    group.add(dwg.rect(insert=(px, py), size=(pw, ph),
+                                      fill='#A0522D', stroke='#000', stroke_width=1, opacity=0.8))
+                    group.add(dwg.text('LS', insert=(px + pw/2, py + ph/2),
+                                      text_anchor='middle', font_size='10px', font_weight='bold', fill='#FFF'))
+                else:
+                    group.add(dwg.rect(insert=(px, py), size=(pw, ph),
+                                      fill='#CD853F', stroke='#000', stroke_width=1, opacity=0.8))
+                    group.add(dwg.text(f'W3-{i+1}', insert=(px + pw/2, py + ph/2 - 5),
+                                      text_anchor='middle', font_size='8px', font_weight='bold', fill='#000'))
+                    group.add(dwg.text(f'{h}"W', insert=(px + pw/2, py + ph/2 + 3),
+                                      text_anchor='middle', font_size='7px', fill='#000'))
+                    group.add(dwg.text(f'{cab["height_inches"]}"H', insert=(px + pw/2, py + ph/2 + 10),
+                                      text_anchor='middle', font_size='7px', fill='#000'))

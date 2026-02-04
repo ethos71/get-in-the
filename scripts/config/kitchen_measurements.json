@@ -341,19 +341,27 @@
   "appliances": {
     "fridge": {
       "location": "E3",
-      "position_from_start_inches": 63.5,
+      "position_from_start_inches": 47.5,
       "width_inches": 36,
       "depth_inches": 24,
       "height_inches": 70,
-      "notes": "South end of E3 wall (99.5 - 36 = 63.5)"
+      "notes": "Center of E3 wall with tall cabinets north and south"
     },
-    "range": {
+    "fridge_cabinet_north": {
       "location": "E3",
-      "position_from_start_inches": 24,
-      "width_inches": 30,
+      "position_from_start_inches": 31.5,
+      "width_inches": 16,
       "depth_inches": 24,
-      "height_inches": 36,
-      "notes": "Between E3-1 cabinet and fridge"
+      "height_inches": 84,
+      "notes": "Floor to ceiling cabinet north of fridge"
+    },
+    "fridge_cabinet_south": {
+      "location": "E3",
+      "position_from_start_inches": 83.5,
+      "width_inches": 16,
+      "depth_inches": 24,
+      "height_inches": 84,
+      "notes": "Floor to ceiling cabinet south of fridge"
     },
     "sink": {
       "location": "N1",
@@ -370,14 +378,13 @@
       "height_inches": 34,
       "notes": "East of sink on N1 wall"
     },
-    "corner_cabinet": {
-      "location": "SW_CORNER",
-      "position_w3_from_start_inches": 96.25,
-      "position_s1_from_start_inches": 0,
-      "width_inches": 36,
-      "depth_inches": 36,
+    "stove_microwave_cabinet": {
+      "location": "S1",
+      "position_from_start_inches": 60,
+      "width_inches": 30,
+      "depth_inches": 24,
       "height_inches": 84,
-      "notes": "Floor to ceiling corner cabinet at SW corner (W3-S1)"
+      "notes": "Floor to ceiling stove/microwave cabinet on S1"
     }
   },
   "base_cabinets": {
@@ -410,15 +417,9 @@
     "E3": [
       {
         "type": "base",
-        "width_inches": 9,
-        "position_from_start": 54,
-        "notes": "Between range and fridge"
-      },
-      {
-        "type": "fridge_space",
         "width_inches": 36,
-        "position_from_start": 63.5,
-        "notes": "Fridge at south end of E3"
+        "position_from_start": 47.5,
+        "notes": "Under fridge, moved north"
       }
     ],
     "E2": [],
@@ -426,23 +427,14 @@
       {
         "type": "lazy_susan",
         "width_inches": 36,
+        "depth_inches": 36,
         "position_from_start": 0,
-        "notes": "SW corner lazy susan only"
+        "notes": "SW corner lazy susan - 36x36 square for corner"
       },
       {
         "type": "base",
-        "width_inches": 18,
+        "width_inches": 24,
         "position_from_start": 36
-      },
-      {
-        "type": "base",
-        "width_inches": 18,
-        "position_from_start": 54
-      },
-      {
-        "type": "base",
-        "width_inches": 18,
-        "position_from_start": 72
       }
     ],
     "W3": [
@@ -456,6 +448,12 @@
         "type": "base",
         "width_inches": 18,
         "position_from_start": 18
+      },
+      {
+        "type": "base",
+        "width_inches": 12,
+        "position_from_start": 36,
+        "notes": "Fill gap before lazy susan"
       }
     ]
   },
@@ -482,41 +480,24 @@
     ],
     "E3": [
       {
-        "width_inches": 30,
-        "height_inches": 42,
-        "position_from_start": 24,
-        "notes": "Above range (24-54\")"
-      },
-      {
-        "width_inches": 9,
-        "height_inches": 42,
-        "position_from_start": 54,
-        "notes": "Above E3-1 base cabinet (54-63\")"
-      },
-      {
         "width_inches": 36,
         "height_inches": 42,
-        "position_from_start": 63.5,
-        "notes": "Above fridge (63.5-99.5\")"
+        "position_from_start": 47.5,
+        "notes": "Above fridge, moved north"
       }
     ],
     "E2": [],
     "S1": [
       {
-        "width_inches": 18,
+        "width_inches": 12,
         "height_inches": 42,
-        "position_from_start": 36,
-        "notes": "No cabinet over lazy susan"
+        "position_from_start": 24,
+        "notes": "Between wall LS and S1-1"
       },
       {
-        "width_inches": 18,
+        "width_inches": 24,
         "height_inches": 42,
-        "position_from_start": 54
-      },
-      {
-        "width_inches": 18,
-        "height_inches": 42,
-        "position_from_start": 72
+        "position_from_start": 36
       }
     ],
     "W3": [
@@ -531,6 +512,20 @@
         "height_inches": 42,
         "position_from_start": 18,
         "notes": "Fill gap"
+      },
+      {
+        "width_inches": 12,
+        "height_inches": 42,
+        "position_from_start": 36,
+        "notes": "Fill gap before lazy susan"
+      },
+      {
+        "type": "lazy_susan",
+        "width_inches": 24,
+        "depth_inches": 24,
+        "height_inches": 42,
+        "position_from_start": 48.75,
+        "notes": "SW corner lazy susan for wall cabinets - 24x24 square"
       }
     ]
   }
