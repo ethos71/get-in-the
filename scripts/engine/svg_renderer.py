@@ -459,17 +459,17 @@ class SVGRenderer:
         e1_type = wall_measurements["E1"].get("type", "wall")
         
         if e1_type == "door":
-            # Draw door with arc swinging westward into kitchen (hinge on north side)
+            # Draw door with arc swinging westward into kitchen (hinge on south side)
             walls_group.add(dwg.line(
                 start=(south_wall_end_x, e3_height),
                 end=(south_wall_end_x, e3_height + e1_height),
                 stroke=self.door_color,
                 stroke_width=self.door_width
             ))
-            # Door arc - hinge on north, swing westward from south end
+            # Door arc - hinge on south, swing westward from north end
             radius = e1_height
             walls_group.add(dwg.path(
-                d=f"M {south_wall_end_x} {e3_height + e1_height} A {radius} {radius} 0 0 1 {south_wall_end_x - radius} {e3_height}",
+                d=f"M {south_wall_end_x} {e3_height} A {radius} {radius} 0 0 0 {south_wall_end_x - radius} {e3_height + e1_height}",
                 fill='none',
                 stroke=self.door_color,
                 stroke_width=1,
