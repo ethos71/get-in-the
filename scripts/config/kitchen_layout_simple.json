@@ -1,0 +1,193 @@
+{
+  "room": {
+    "name": "Kitchen",
+    "scale_pixels_per_inch": 3.0
+  },
+  "walls": {
+    "N1": {
+      "length": 87,
+      "type": "wall"
+    },
+    "N2": {
+      "length": 86,
+      "type": "alcove",
+      "notes": "Simplified - just visual representation"
+    },
+    "W1": {
+      "length": 28,
+      "type": "wall"
+    },
+    "W2": {
+      "length": 31.5,
+      "type": "entryway"
+    },
+    "W3": {
+      "length": 72.75,
+      "type": "wall"
+    },
+    "S1": {
+      "length": 90.75,
+      "type": "wall"
+    },
+    "S2": {
+      "length": 32,
+      "type": "entryway"
+    },
+    "S3": {
+      "length": 4.5,
+      "type": "wall"
+    },
+    "E1": {
+      "length": 32.75,
+      "type": "door"
+    },
+    "E2": {
+      "length": 46.75,
+      "type": "wall"
+    },
+    "E3": {
+      "length": 99.5,
+      "type": "wall"
+    }
+  },
+  "layouts": {
+    "stove_on_S1": {
+      "description": "Original layout with stove on south wall",
+      "appliances": {
+        "sink": {
+          "wall": "N1",
+          "width": 33,
+          "depth": 24,
+          "position": 22.25
+        },
+        "dishwasher": {
+          "wall": "N1",
+          "width": 24,
+          "depth": 24,
+          "position": 55.25
+        },
+        "fridge": {
+          "wall": "E3",
+          "width": 36,
+          "depth": 36,
+          "position": 47.5
+        },
+        "stove_microwave": {
+          "wall": "S1",
+          "width": 30,
+          "depth": 24,
+          "height": 84,
+          "position": 60
+        }
+      },
+      "base_cabinets": {
+        "N1": [
+          {"type": "cabinet", "width": 22, "notes": "West of sink"},
+          {"type": "cabinet", "width": 8, "position": 79.25, "notes": "East end, small cabinet"}
+        ],
+        "E3": [
+          {"type": "tall_cabinet", "width": 16, "height": 84, "position": 31.5, "notes": "North of fridge"},
+          {"type": "fridge", "width": 36, "position": 47.5},
+          {"type": "tall_cabinet", "width": 16, "position": 83.5, "notes": "South of fridge"}
+        ],
+        "S1": [
+          {"type": "lazy_susan", "width": 36, "depth": 36, "notes": "SW corner - 36x36 square"},
+          {"type": "cabinet", "width": 24, "notes": "S1-2"}
+        ],
+        "W3": [
+          {"type": "cabinet", "width": 24},
+          {"type": "lazy_susan", "width": 24, "depth": 24, "position": 48.75, "notes": "SW corner wall - 24x24"}
+        ]
+      },
+      "wall_cabinets": {
+        "N1": [
+          {"type": "cabinet", "width": 21, "height": 42, "notes": "West of window"},
+          {"type": "window", "width": 28, "position": 21},
+          {"type": "cabinet", "width": 24, "height": 42, "notes": "Over dishwasher"},
+          {"type": "cabinet", "width": 9, "height": 42, "notes": "East to corner"}
+        ],
+        "E3": [
+          {"type": "cabinet", "width": 36, "height": 42, "position": 47.5, "notes": "Above fridge"}
+        ],
+        "S1": [
+          {"type": "lazy_susan", "width": 24, "depth": 24, "height": 42, "position": 0, "notes": "Wall LS at SW corner"},
+          {"type": "cabinet", "width": 12, "height": 42, "notes": "Between wall LS and S1-1"},
+          {"type": "cabinet", "width": 24, "height": 42}
+        ],
+        "W3": [
+          {"type": "cabinet", "width": 24, "height": 42},
+          {"type": "lazy_susan", "width": 24, "depth": 24, "height": 42, "position": 48.75}
+        ]
+      }
+    },
+    "stove_on_W3": {
+      "description": "Alternative layout with stove on west wall",
+      "appliances": {
+        "sink": {
+          "wall": "N1",
+          "width": 33,
+          "depth": 24,
+          "position": 36
+        },
+        "dishwasher": {
+          "wall": "N1",
+          "width": 24,
+          "depth": 24,
+          "position": 55.25
+        },
+        "fridge": {
+          "wall": "E3",
+          "width": 36,
+          "depth": 36,
+          "position": 47.5
+        },
+        "stove_microwave": {
+          "wall": "W3",
+          "width": 30,
+          "depth": 24,
+          "height": 84,
+          "position": 12
+        }
+      },
+      "base_cabinets": {
+        "N1": [
+          {"type": "cabinet", "width": 22, "notes": "West of sink"},
+          {"type": "cabinet", "width": 8, "position": 79.25, "notes": "East end, small cabinet"}
+        ],
+        "E3": [
+          {"type": "tall_cabinet", "width": 16, "height": 84, "position": 31.5, "notes": "North of fridge"},
+          {"type": "fridge", "width": 36, "position": 47.5},
+          {"type": "tall_cabinet", "width": 16, "position": 83.5, "notes": "South of fridge"}
+        ],
+        "S1": [
+          {"type": "lazy_susan", "width": 36, "depth": 36, "notes": "SW corner - 36x36 square"},
+          {"type": "cabinet", "width": 24, "notes": "S1-2"}
+        ],
+        "W3": [
+          {"type": "cabinet", "width": 12},
+          {"type": "lazy_susan", "width": 24, "depth": 24, "position": 48.75, "notes": "SW corner base - 24x24"}
+        ]
+      },
+      "wall_cabinets": {
+        "N1": [
+          {"type": "cabinet", "width": 21, "height": 42, "notes": "West of window"},
+          {"type": "window", "width": 28, "position": 21},
+          {"type": "cabinet", "width": 24, "height": 42, "notes": "Over dishwasher"},
+          {"type": "cabinet", "width": 9, "height": 42, "notes": "East to corner"}
+        ],
+        "E3": [
+          {"type": "cabinet", "width": 36, "height": 42, "position": 47.5, "notes": "Above fridge"}
+        ],
+        "S1": [
+          {"type": "lazy_susan", "width": 24, "depth": 24, "height": 42, "position": 0, "notes": "Wall LS at SW corner"},
+          {"type": "cabinet", "width": 12, "height": 42, "notes": "Between wall LS and S1-1"},
+          {"type": "cabinet", "width": 24, "height": 42}
+        ],
+        "W3": [
+          {"type": "cabinet", "width": 18, "height": 42},
+          {"type": "lazy_susan", "width": 24, "depth": 24, "height": 42, "position": 48.75}
+        ]
+      }
+    }
+  }
+}

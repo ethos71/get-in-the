@@ -435,25 +435,27 @@
         "type": "base",
         "width_inches": 24,
         "position_from_start": 36
+      },
+      {
+        "type": "base",
+        "width_inches": 24,
+        "position_from_start": 60,
+        "notes": "Where stove used to be"
       }
     ],
     "W3": [
       {
         "type": "base",
-        "width_inches": 18,
+        "width_inches": 24,
         "position_from_start": 0,
         "notes": "North end"
       },
       {
-        "type": "base",
-        "width_inches": 18,
-        "position_from_start": 18
-      },
-      {
-        "type": "base",
-        "width_inches": 12,
-        "position_from_start": 36,
-        "notes": "Fill gap before lazy susan"
+        "type": "lazy_susan",
+        "width_inches": 24,
+        "depth_inches": 24,
+        "position_from_start": 48.75,
+        "notes": "SW corner lazy susan base - 24x24"
       }
     ]
   },
@@ -462,18 +464,21 @@
       {
         "width_inches": 21,
         "height_inches": 42,
+        "depth_inches": 12,
         "position_from_start": 0,
         "notes": "West of window"
       },
       {
         "width_inches": 24,
         "height_inches": 42,
+        "depth_inches": 12,
         "position_from_start": 55.25,
         "notes": "Over dishwasher"
       },
       {
         "width_inches": 9,
         "height_inches": 42,
+        "depth_inches": 12,
         "position_from_start": 78,
         "notes": "East to corner"
       }
@@ -482,6 +487,7 @@
       {
         "width_inches": 36,
         "height_inches": 42,
+        "depth_inches": 12,
         "position_from_start": 47.5,
         "notes": "Above fridge, moved north"
       }
@@ -491,33 +497,31 @@
       {
         "width_inches": 12,
         "height_inches": 42,
+        "depth_inches": 12,
         "position_from_start": 24,
         "notes": "Between wall LS and S1-1"
       },
       {
         "width_inches": 24,
         "height_inches": 42,
+        "depth_inches": 12,
         "position_from_start": 36
+      },
+      {
+        "width_inches": 24,
+        "height_inches": 42,
+        "depth_inches": 12,
+        "position_from_start": 60,
+        "notes": "Where stove used to be"
       }
     ],
     "W3": [
       {
-        "width_inches": 18,
+        "width_inches": 24,
         "height_inches": 42,
+        "depth_inches": 12,
         "position_from_start": 0,
         "notes": "North end of W3"
-      },
-      {
-        "width_inches": 18,
-        "height_inches": 42,
-        "position_from_start": 18,
-        "notes": "Fill gap"
-      },
-      {
-        "width_inches": 12,
-        "height_inches": 42,
-        "position_from_start": 36,
-        "notes": "Fill gap before lazy susan"
       },
       {
         "type": "lazy_susan",

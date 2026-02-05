@@ -67,6 +67,11 @@ class CabinetRenderer:
         """Generic appliance renderer"""
         location = appliance.get("location")
         
+        # Calculate W3 start position
+        w1_h = self.measurements["wall_measurements"]["W1"]["measurement_inches"]
+        w2_h = self.measurements["wall_measurements"]["W2"]["measurement_inches"]
+        w3_start = w1_h + w2_h
+        
         # Calculate position based on location
         if location == "E3":
             x = north_width - appliance["depth_inches"]
@@ -83,6 +88,11 @@ class CabinetRenderer:
             y = west_height - appliance["depth_inches"]
             w = appliance["width_inches"]
             h = appliance["depth_inches"]
+        elif location == "W3":
+            x = 0
+            y = w3_start + appliance["position_from_start_inches"]
+            w = appliance["depth_inches"]
+            h = appliance["width_inches"]
         else:
             return
         
